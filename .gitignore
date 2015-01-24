@@ -30,3 +30,4 @@ node_modules
 # Custom
 _deploy
 client/templates.js
+styles/app.css
