@@ -8,15 +8,12 @@ var User = require('./models/user');
 
 
 var App = State.extend({
-    children: {
-        me: User
-    },
-
     props: {
         firebaseId: ['string', true, 'torid-inferno-617'],
         env: ['string', true, window.location.host.split('.')[0].split(':')[0]],
         name: ['string', true, 'GifChess'],
-        id: ['string', true, 'ss15-luke-js']
+        id: ['string', true, 'ss15-luke-js'],
+        rendered: ['boolean', true, false]
     },
 
     derived: {
@@ -29,15 +26,26 @@ var App = State.extend({
         firebaseUrl: {
             deps: ['firebaseId'],
             fn: function () {
-                return 'https://' + this.firebaseId + '.firebaseio.com'.replace();
+                return 'https://' + this.firebaseId + '.firebaseio.com/';
+            }
+        },
+        firebase: {
+            deps: ['firebaseUrl'],
+            fn: function () {
+                return new Firebase(this.firebaseUrl);
             }
         }
     },
 
     initialize: function () {
-        this.firebase = new Firebase(this.firebaseUrl);
-        this.firebase.onAuth(this._onAuth.bind(this));
+        window.app = this;
 
+        this.me = new User();
+        this.firebase.onAuth(this._onAuth.bind(this));
+    },
+    renderMainView: function () {
+        if (this.rendered) return;
+        this.rendered = true;
         jQuery(function () {
             attachFastClick(document.body);
 
@@ -47,10 +55,13 @@ var App = State.extend({
                 me: this.me
             });
 
-            this.navigate = this.view.navigate;
+            this.navigate = this.view.navigate.bind(this.view);
         }.bind(this));
     },
 
+    // ------------------------
+    // AUTH
+    // ------------------------
     login: function () {
         this.firebase.authWithOAuthPopup('twitter', this._tryAuth.bind(this));
     },
@@ -67,8 +78,12 @@ var App = State.extend({
     },
     _onAuth: function (auth) {
         this.me.auth(auth);
+        this.renderMainView();
     },
 
+    // ------------------------
+    // LOCAL STORAGE
+    // ------------------------
     localStorage: function (key, val) {
         var localStorageKey = this.lsKey;
         var current = localStorage[localStorageKey] || '{}';
@@ -93,4 +108,4 @@ var App = State.extend({
 });
 
 
-window.app = new App({});
+new App({});
