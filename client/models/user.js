@@ -3,7 +3,6 @@ var BaseState = require('./base');
 
 module.exports = BaseState.extend({
     props: {
-        id: 'string',
         uid: 'string',
         token: 'string',
         provider: 'string',
@@ -12,9 +11,17 @@ module.exports = BaseState.extend({
         avatar: 'string'
     },
     session: {
-         _auth: 'object'
+         _auth: 'object',
+         currentUser: 'string'
      },
     derived: {
+        isMe: {
+            deps: ['currentUser', 'uid'],
+            fn: function () {
+                var cur = this.currentUser;
+                return !!cur && !!this.uid && cur === this.uid;
+            }
+        },
         authed: {
             deps: ['uid'],
             fn: function () {
@@ -28,23 +35,25 @@ module.exports = BaseState.extend({
             }
         },
         profileUrl: {
-            deps: ['userId'],
+            deps: ['uid'],
             fn: function () {
-                return '/user/' + this.userId;
+                return '/user/' + this.uid;
             }
         }
     },
 
     initialize: function () {
-        this.listenTo(this, 'change:userId', function () {
-            this.id = this.userId;
-        });
-        // app.firebase.child('users/' + this.id)
-        // .on('value', function(snapshot) {
-        //     console.log(snapshot.val());
-        // }, function (errorObject) {
-        //     console.log('The read failed: ' + errorObject.code);
-        // });
+        if (app.me && this !== app.me) {
+            this.listenTo(app.me, 'change:uid', this._setCurrentUser);
+            this._setCurrentUser();
+        }
+    },
+    _setCurrentUser: function () {
+        this.currentUser = app.me.uid;
+    },
+
+    identity: function () {
+        return this.pick('uid', 'username');
     },
 
     auth: function (data) {

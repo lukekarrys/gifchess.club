@@ -57,6 +57,8 @@ module.exports = MainView.extend({
 
     updatePage: function () {
         MainView.prototype.updatePage.apply(this, arguments);
+        window.page = this.currentPage;
+        window.model = this.currentPage.model;
         this.collapseNav();
         track.pageview(window.location.pathname);
     },

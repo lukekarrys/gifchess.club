@@ -12,8 +12,8 @@ var User = require('./models/user');
 module.exports = {
     routes: {
         '': 'home',
-        'game/new': 'newGame',
-        'game/:id': 'game',
+        'games/new': 'newGame',
+        'games/:id': 'game',
         'user/:id': 'user',
         '*path': '_404'
     },

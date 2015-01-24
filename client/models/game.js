@@ -1,17 +1,22 @@
 var BaseState = require('./base');
 var User = require('./user');
+var Chess = require('ampersand-chess-state');
 
 
 module.exports = BaseState.extend({
     children: {
         white: User,
-        black: User
+        black: User,
+        chess: Chess
     },
     session: {
-        playerLocation: ['string', true, 'player_list'],
-        gameLocation: ['string', true, 'player_data'],
         id: 'string',
-        errorMessage: 'string'
+        error: 'string',
+        playingState: {
+            type: 'string',
+            default: 'none',
+            values: ['none', 'watching', 'black', 'white', 'joining']
+        }
     },
     derived: {
         newGame: {
@@ -24,22 +29,24 @@ module.exports = BaseState.extend({
 
     initialize: function () {
         this.initNew = this.newGame;
+
         if (app.me.authed) {
             if (this.newGame) {
                 this._findOpenGames();
             } else {
-                this._attemptJoin();
+                this._findOpenColors();
             }
         } else {
             if (this.newGame) {
-                this.errorMessage = 'You must be logged in to start a new game.';
+                this.error = 'AUTH';
             } else {
-                this._watchGame();
+                this._startGame({
+                    role: 'watching'
+                });
             }
         }
     },
     _findOpenGames: function () {
-        var self = this;
         var openRef = app.firebase.child('open_games');
 
         openRef.once('value', function (openGames) {
@@ -56,73 +63,92 @@ module.exports = BaseState.extend({
                 openRef.child(id).remove();
             }
 
-            self.id = id;
-            self._attemptJoin();
-        });
+            this.id = id;
+            this._findOpenColors();
+        }.bind(this));
     },
-    _attemptJoin: function () {
-        var self = this;
+    _findOpenColors: function () {
         this.gameRef = app.firebase.child('games/' + this.id);
-
-        this.gameRef.child(this.playerLocation + '/white/uid').on('value', function (whiteId) {
-            if (whiteId.val() === null) {
-                self.joinAs('white', app.me);
-            }
-        });
-        this.gameRef.child(this.playerLocation + '/black/uid').on('value', function (blackId) {
-            if (blackId.val() === null) {
-                self.joinAs('black', app.me);
-            }
-        });
-    },
-    joinAs: function (color, user) {
-        var self = this;
-        var myColor = null;
-        var alreadyInGame = false;
-        var userId = user.uid;
-
-        this.gameRef.child(this.playerLocation + '/' + color)
-        .transaction(function (player) {
-            if (player === null) {
-                player = user.pick('uid', 'username');
-            }
-
-            if (player.uid === userId) {
-                alreadyInGame = true;
-                myColor = color;
-            }
-
-            return player;
-
-        }, function (error, committed, snapshot) {
-            snapshot = snapshot.val();
-
-            if (snapshot.white) {
-                self.white.set(snapshot.white);
-            }
-
-            if (snapshot.black) {
-                self.black.set(snapshot.black);
-            }
-
-            if (committed || alreadyInGame) {
-                self.playGame({
-                    color: myColor,
-                    id: userId,
-                    init: !alreadyInGame
-                });
+        this.gameRef.once('value', function (gameSS) {
+            var game = gameSS.val();
+            if (game === null && !this.initNew) {
+                this.error = 'NOT_EXIST';
             } else {
-
+                this.gameRef.child('players').once('value', this._attemptJoin.bind(this));
             }
-        }, false);
+        }, this);
     },
-    playGame: function (options) {
-        console.log('PLAY', options);
-        // if (options.color) {
-        //     this.playerRef = this.gameRef.child(this.gameLocation).child(options.color);
-        //     if (options.init) {
-        //         this.playerRef({userId: options.id});
-        //     }
-        // }
+    _attemptJoin: function (data) {
+        var players = data.val();
+        var canJoin = this.playingState === 'none';
+        var hasWhite = !!players && !!players.white && players.white.uid;
+        var hasBlack = !!players && !!players.black && players.black.uid;
+
+        // One of the players is us, so we play
+        if (hasWhite === app.me.uid) {
+            return this._startGame({role: 'white', user: app.me.identity(), init: false});
+        }
+        else if (hasBlack === app.me.uid) {
+            return this._startGame({role: 'black', user: app.me.identity(), init: false});
+        }
+
+        // No players so join as white
+        if (players === null && canJoin) {
+            return this._joinAs('white', app.me);
+        }
+        // Only white is open
+        else if (hasBlack && !hasWhite && canJoin) {
+            return this._joinAs('white', app.me);
+        }
+        // Only black is open
+        else if (hasWhite && !hasBlack && canJoin) {
+            return this._joinAs('black', app.me);
+        }
+    },
+    _joinAs: function (color, user) {
+        this.playingState = 'joining';
+
+        this.gameRef
+        .child('players/' + color)
+        .transaction(function (player) {
+            return player === null ? user.identity() : void 0;
+        }, function (error, committed, snapshot) {
+            if (committed) {
+                this._startGame({
+                    role: color,
+                    user: snapshot.val(),
+                    init: true
+                });
+            }
+            else {
+                this._findOpenGames();
+            }
+        }.bind(this));
+    },
+    _startGame: function (options) {
+        this.playingState = options.role;
+
+        if (options.role === 'white' || options.role === 'black') {
+            this[options.role].set(options.user);
+        }
+
+        this.gameRef.child('players').on('value', function (data) {
+            data = data.val();
+            console.log('PLAYERS', JSON.stringify(data, null, 2));
+
+            if (data) {
+                if (data.white) {
+                    this.white.set(data.white);
+                }
+                if (data.black) {
+                    this.black.set(data.black);
+                }
+            }
+        }, this);
+
+        this.gameRef.child('moves').on('value', function (data) {
+            data = data.val();
+            console.log('MOVES', JSON.stringify(data, null, 2));
+        }, this);
     }
 });

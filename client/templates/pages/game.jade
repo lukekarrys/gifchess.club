@@ -1,4 +1,7 @@
 div
   h1 Game
-  h2(data-hook='white-player')
-  h2(data-hook='black-player')
+  div.alert.alert-danger(data-hook='error')
+  div.alert.alert-info(data-hook='loading')
+  div(data-hook='content')
+    h2(data-hook='white-player')
+    h2(data-hook='black-player')
