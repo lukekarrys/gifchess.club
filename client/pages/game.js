@@ -12,7 +12,7 @@ module.exports = BaseView.extend({
         bottomPlayer: {hook: 'bottom-player'},
         loading: {type: 'booleanClass', hook: 'chess-game'},
         errorMessage: [
-            {type: 'toggle', hook: 'error'},
+            {type: 'toggle', yes: '[data-hook=error]', no: '[data-hook=content]'},
             {hook: 'error', type: 'innerHTML'}
         ]
     },

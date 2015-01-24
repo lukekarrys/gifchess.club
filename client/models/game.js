@@ -17,8 +17,7 @@ module.exports = BaseState.extend({
             default: 'none',
             values: ['none', 'watcher', 'black', 'white', 'joining']
         },
-        loading: 'boolean',
-        ready: 'boolean'
+        loading: 'boolean'
     },
     derived: {
         newGame: {
@@ -139,7 +138,6 @@ module.exports = BaseState.extend({
     },
     _startGame: function (options) {
         this.playingState = options.role;
-        this.ready = true;
 
         if (options.role === 'white' || options.role === 'black') {
             this[options.role].set(options.user);
@@ -160,12 +158,18 @@ module.exports = BaseState.extend({
             }
         }, this);
 
-        this._getGameRef().child('moves').on('child_added', function (data) {
-            console.log(data.val().pgn);
-            this.chess.pgn = data.val().pgn;
+        this._getGameRef()
+        .child('moves')
+        .endAt()
+        .limit(1)
+        .on('child_added', function (snapshot) {
+            this.onMove(snapshot, {animate: false});
         }, this);
 
         this.listenTo(this.chess, 'change:move', this.sendMove);
+    },
+    onMove: function (data, options) {
+        this.chess.set('pgn', data.val().pgn, options);
     },
     sendMove: function (model, move) {
         move.pgn = model.pgn;

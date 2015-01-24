@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "ampersand-chess-state": "^0.1.5",
-    "ampersand-chess-view": "^0.1.0",
+    "ampersand-chess-view": "^0.2.0",
     "ampersand-collection": "^1.4.0",
     "ampersand-main-view": "^1.0.0",
     "ampersand-router": "^1.0.7",
