@@ -7,8 +7,18 @@
     "url": "https://github.com/staticshowdown/ss15-luke-js/issues"
   },
   "dependencies": {
+    "ampersand-chess-state": "^0.1.4",
+    "ampersand-chess-view": "^0.1.0",
+    "ampersand-collection": "^1.4.0",
+    "ampersand-main-view": "^1.0.0",
+    "ampersand-router": "^1.0.7",
+    "ampersand-state": "^4.4.4",
+    "ampersand-view": "^7.2.0",
     "bootstrap": "^3.3.2",
-    "jquery": "^2.1.3"
+    "fastclick": "^1.0.3",
+    "inherits": "^2.0.1",
+    "jquery": "^2.1.3",
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "browserify": "^8.1.1",
@@ -35,8 +45,8 @@
   },
   "scripts": {
     "build": "node server --build --minify",
-    "deploy": "./node_modules/.bin/divshot",
-    "lint": "./node_modules/.bin/jshint .",
+    "deploy": "divshot",
+    "lint": "jshint .",
     "start": "node server",
     "test": "browserify test/*.js | tape-run | tap-spec",
     "test-browser": "run-browser test/*"

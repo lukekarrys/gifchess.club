@@ -1,1 +1,35 @@
-div test
+body
+  header
+    .navbar.navbar-default(role="navigation")
+      .container-fluid
+        .navbar-header
+          button.navbar-toggle(type="button", data-toggle="collapse", data-target="#header-nav")
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href="/") GifChess
+
+        #header-nav.collapse.navbar-collapse(data-hook='main-nav-collapse')
+          ul.nav.navbar-nav.navbar-right(data-hook="main-nav")
+            li
+              a(href="/game/new", data-hook="subscribe") New Game
+            li(data-hook="user-nav")
+              a(href="#", data-toggle="dropdown")
+                span(data-hook='username')
+                b.caret
+              ul.dropdown-menu(role="menu")
+                li
+                  a(data-hook='user-link') My Games
+                li.divider
+                li
+                  a(href="#", data-hook="logout") Logout
+
+  .container
+    main(data-hook="page-container")
+
+    footer.footer
+      p
+        | Made with love by 
+        a(href="http://twitter.com/lukekarrys") Luke
+        |  in Arizona.
