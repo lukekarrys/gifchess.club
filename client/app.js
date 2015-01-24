@@ -1,6 +1,5 @@
 /* globals jQuery, Firebase */
 
-var _ = require('underscore');
 var attachFastClick = require('fastclick');
 var State = require('ampersand-state');
 
@@ -37,36 +36,37 @@ var App = State.extend({
 
     initialize: function () {
         this.firebase = new Firebase(this.firebaseUrl);
-        this.me.auth(this.firebase.getAuth());
+        this.firebase.onAuth(this._onAuth.bind(this));
 
-        jQuery(_.bind(function () {
+        jQuery(function () {
+            attachFastClick(document.body);
+
             this.view = new MainView({
                 el: document.body,
                 model: this,
                 me: this.me
             });
+
             this.navigate = this.view.navigate;
-            attachFastClick(document.body);
-        }, this));
+        }.bind(this));
     },
 
     login: function () {
-        this.firebase.authWithOAuthPopup('twitter', this._onAuth.bind(this));
+        this.firebase.authWithOAuthPopup('twitter', this._tryAuth.bind(this));
     },
-    _onAuth: function (err, auth) {
+    logout: function () {
+        this.firebase.unauth();
+    },
+    _tryAuth: function (err) {
         if (err && err.code === 'TRANSPORT_UNAVAILABLE') {
-            this.authWithOAuthRedirect('twitter', this._onAuth.bind(this));
+            this.authWithOAuthRedirect('twitter', this._tryAuth.bind(this));
         }
         else if (err) {
             console.error(err.code, err.message);
         }
-        else if (auth) {
-            this.me.auth(auth);
-        }
     },
-    logout: function () {
-        this.firebase.unauth();
-        this.me.clear();
+    _onAuth: function (auth) {
+        this.me.auth(auth);
     },
 
     localStorage: function (key, val) {
@@ -87,7 +87,6 @@ var App = State.extend({
             return current[key];
         }
     },
-
     __reset: function () {
         localStorage[this.lsKey] = '{}';
     }

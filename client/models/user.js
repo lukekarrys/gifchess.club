@@ -37,7 +37,11 @@ module.exports = BaseState.extend({
     },
     auth: function (data) {
         this._auth = data;
-        if (data && data.provider === 'twitter') {
+
+        if (!data) {
+            this.clear();
+        }
+        else if (data.provider === 'twitter') {
             this.set({
                 uid: data.uid,
                 token: data.uid,
