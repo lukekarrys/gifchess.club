@@ -1,0 +1,3 @@
+node_modules
+_deploy
+client/templates.js

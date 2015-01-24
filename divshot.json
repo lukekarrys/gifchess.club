@@ -1,0 +1,13 @@
+{
+  "name": "ss15-luke-js",
+  "root": "./_deploy",
+  "clean_urls": true,
+  "cache_control": {
+    "/assets/**": 31536000,
+    "/fonts/**": 604800,
+    "/**": "no-cache, no-store"
+  },
+  "routes": {
+    "/**": "index.html"
+  }
+}
