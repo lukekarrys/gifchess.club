@@ -9,5 +9,8 @@
     "unused": true,
     "latedef": true,
     "quotmark": true,
-    "trailing": true
+    "trailing": true,
+    "globals": {
+        "app": false
+    }
 }

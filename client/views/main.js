@@ -14,12 +14,23 @@ module.exports = MainView.extend({
         me: 'state'
     },
 
+    _domEvents: {
+        'click [data-hook=login]': 'login',
+        'click [data-hook=logout]': 'logout'
+    },
+    events: function () {
+        return _.extend({}, this._domEvents, MainView.prototype.events);
+    },
+
     bindings: {
         pageTitle: {
             type: function (el, value) {
                 document.title = value || this.model.name;
             }
-        }
+        },
+        'me.authed': {type: 'toggle', no: '[data-hook=login-nav]', yes: '[data-hook=user-nav]'},
+        'me.username': {hook: 'username'},
+        'me.profileUrl': {type: 'attribute', name: 'href', hook: 'user-link'}
     },
 
     pageRegion: '[data-hook=page-container]',
@@ -30,10 +41,13 @@ module.exports = MainView.extend({
         return jQuery(selector, this.el);
     },
 
-    events: function () {
-        return _.extend({
-            // EVENTS PLACEHOLDER
-        }, MainView.prototype.events);
+    login: function (e) {
+        e.preventDefault();
+        app.login();
+    },
+    logout: function (e) {
+        e.preventDefault();
+        app.logout();
     },
 
     render: function () {

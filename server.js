@@ -33,6 +33,7 @@ var config = {
     developmentMode: !options.minify,
     resourcePrefix: (options.build || options.crawl) ? '/assets/' : '/',
     libraries: [
+        fixPath('client/libraries/firebase.js'),
         fixPath('node_modules/jquery/dist/jquery.js'),
         fixPath('node_modules/bootstrap/js/transition.js'),
         fixPath('node_modules/bootstrap/js/alert.js'),

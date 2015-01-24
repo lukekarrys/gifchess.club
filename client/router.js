@@ -1,9 +1,11 @@
 // var parse = require('./helpers/parseQuerystring');
 var HomePage = require('./pages/home');
 var GamePage = require('./pages/game');
+var UserPage = require('./pages/user');
 var _404Page = require('./pages/_404');
 
 var Game = require('./models/game');
+var User = require('./models/user');
 
 
 module.exports = {
@@ -11,6 +13,7 @@ module.exports = {
         '': 'home',
         'game/new': 'newGame',
         'game/:id': 'game',
+        'user/:id': 'user',
         '*path': '_404'
     },
 
@@ -30,6 +33,14 @@ module.exports = {
         this.triggerPage(new GamePage({
             model: new Game({
                 id: 'new'
+            })
+        }));
+    },
+
+    user: function (id) {
+        this.triggerPage(new UserPage({
+            model: new User({
+                id: id
             })
         }));
     },
