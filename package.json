@@ -35,8 +35,8 @@
   },
   "scripts": {
     "build": "node server --build --minify",
-    "deploy": "./node_modules/.bin/divshot",
-    "lint": "./node_modules/.bin/jshint .",
+    "deploy": "divshot",
+    "lint": "jshint .",
     "start": "node server",
     "test": "browserify test/*.js | tape-run | tap-spec",
     "test-browser": "run-browser test/*"
