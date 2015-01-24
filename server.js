@@ -16,18 +16,14 @@ function quit(err) {
     process.exit(err ? 1 : 0);
 }
 function argv(flag) {
-    return process.argv.join(' ').indexOf('--' + flag) > -1;
+    return process.argv.slice(2).indexOf('--' + flag) > -1;
 }
 
 var index = require('fs').readFileSync(fixPath('index.jade'));
 var renderIndex = function (ctx) { return jade.render(index, ctx); };
 var port = process.env.PORT || 3000;
 var appName = require('./package').name;
-var options = {
-    build: argv('build'),
-    minify: argv('minify'),
-    server: !argv('build') || argv('crawl'),
-};
+var options = {build: argv('build'), minify: argv('minify')};
 
 
 var config = {
