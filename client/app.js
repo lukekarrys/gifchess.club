@@ -17,6 +17,12 @@ var App = State.extend({
     },
 
     derived: {
+        isLocal: {
+            deps: ['env'],
+            fn: function () {
+                return this.env === 'localhost';
+            }
+        },
         lsKey: {
             deps: ['id', 'env'],
             fn: function () {

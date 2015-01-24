@@ -5,6 +5,7 @@
   "cache_control": {
     "/assets/**": 31536000,
     "/fonts/**": 604800,
+    "/img/**": 604800,
     "/**": "no-cache, no-store"
   },
   "routes": {

@@ -1,30 +1,29 @@
+var _ = require('underscore');
 var BaseView = require('../views/base');
 var templates = require('../templates');
+var Board = require('../views/board');
 
 
 module.exports = BaseView.extend({
     template: templates.pages.game,
 
     bindings: {
-        whitePlayer: {hook: 'white-player'},
-        blackPlayer: {hook: 'black-player'},
-        loadingMessage: [
-            {type: 'toggle', yes: '[data-hook=loading]', no: '[data-hook=content]'},
-            {hook: 'loading', type: 'innerHTML'}
-        ],
+        topPlayer: {hook: 'top-player'},
+        bottomPlayer: {hook: 'bottom-player'},
+        loading: {type: 'booleanClass', hook: 'chess-game'},
         errorMessage: [
             {type: 'toggle', hook: 'error'},
             {hook: 'error', type: 'innerHTML'}
         ]
     },
+    props: {
+        defaultPlayer: ['string', true, 'Loading player info...']
+    },
     derived: {
-        loadingMessage: {
-            deps: ['model.playingState'],
+        loading: {
+            deps: ['model.playingState', 'model.loading'],
             fn: function () {
-                if (this.model.playingState === 'none') {
-                    return 'Loading game state...';
-                }
-                return '';
+                return !!(this.model.playingState === 'none' || this.model.loading);
             }
         },
         errorMessage: {
@@ -39,22 +38,55 @@ module.exports = BaseView.extend({
                 return '';
             }
         },
-        whitePlayer: {
-            deps: ['model.white.username'],
+        topPlayer: {
+            deps: ['model.white.username', 'model.black.username', 'model.white.isMe', 'model.black.isMe', 'defaultPlayer'],
             fn: function () {
-                return this.model.white.username || 'Waiting for player to join...';
+                if (this.model.white.isMe) {
+                    return this.model.black.username || this.defaultPlayer;
+                }
+                return this.model.white.username || this.defaultPlayer;
             }
         },
-        blackPlayer: {
-            deps: ['model.black.username'],
+        bottomPlayer: {
+            deps: ['model.white.username', 'model.black.username', 'model.white.isMe', 'model.black.isMe', 'defaultPlayer'],
             fn: function () {
-                return this.model.black.username || 'Waiting for player to join...';
+                if (this.model.white.isMe) {
+                    return this.model.white.username || this.defaultPlayer;
+                }
+                return this.model.black.username || this.defaultPlayer;
             }
-        }
+        },
     },
     initialize: function () {
         this.listenTo(this.model, 'change:id', function () {
             app.navigate('/games/' + this.model.id, {trigger: false, replace: true});
         });
+    },
+    render: function () {
+        this.renderWithTemplate();
+        this.renderBoard();
+        return this;
+    },
+    renderBoard: function () {
+        this.boardView = this.renderSubview(new Board({
+            role: this.model.role,
+            Chessboard: window.ChessBoard,
+            boardConfig: {
+                pieceTheme: '/img/{piece}.png',
+                showNotation: false
+            },
+            chess: this.model.chess
+        }), this.queryByHook('chess-game'));
+
+        this.bindWindowEvents({resize: 'onResize'});
+        _.defer(_.bind(this.onResize, this));
+
+        this.listenTo(this.model, 'change:role', this.setBoardRole);
+    },
+    setBoardRole: function () {
+        this.boardView.role = this.model.role;
+    },
+    onResize: function () {
+        this.boardView.board.resize();
     }
 });

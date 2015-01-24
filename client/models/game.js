@@ -15,8 +15,10 @@ module.exports = BaseState.extend({
         playingState: {
             type: 'string',
             default: 'none',
-            values: ['none', 'watching', 'black', 'white', 'joining']
-        }
+            values: ['none', 'watcher', 'black', 'white', 'joining']
+        },
+        loading: 'boolean',
+        ready: 'boolean'
     },
     derived: {
         newGame: {
@@ -24,11 +26,18 @@ module.exports = BaseState.extend({
             fn: function () {
                 return this.id === 'new';
             }
+        },
+        role: {
+            deps: ['playingState'],
+            fn: function () {
+                return ['black', 'white', 'watcher'].indexOf(this.playingState) > -1 ? this.playingState : 'watcher';
+            }
         }
     },
 
     initialize: function () {
         this.initNew = this.newGame;
+        this.chess.freezeOnFinish = true;
 
         if (app.me.authed) {
             if (this.newGame) {
@@ -40,11 +49,15 @@ module.exports = BaseState.extend({
             if (this.newGame) {
                 this.error = 'AUTH';
             } else {
+                this.loading = true;
                 this._startGame({
-                    role: 'watching'
+                    role: 'watcher'
                 });
             }
         }
+    },
+    _getGameRef: function () {
+        return this.gameRef || (this.gameRef = app.firebase.child('games/' + this.id));
     },
     _findOpenGames: function () {
         var openRef = app.firebase.child('open_games');
@@ -68,13 +81,12 @@ module.exports = BaseState.extend({
         }.bind(this));
     },
     _findOpenColors: function () {
-        this.gameRef = app.firebase.child('games/' + this.id);
-        this.gameRef.once('value', function (gameSS) {
+        this._getGameRef().once('value', function (gameSS) {
             var game = gameSS.val();
             if (game === null && !this.initNew) {
                 this.error = 'NOT_EXIST';
             } else {
-                this.gameRef.child('players').once('value', this._attemptJoin.bind(this));
+                this._getGameRef().child('players').once('value', this._attemptJoin.bind(this));
             }
         }, this);
     },
@@ -108,7 +120,7 @@ module.exports = BaseState.extend({
     _joinAs: function (color, user) {
         this.playingState = 'joining';
 
-        this.gameRef
+        this._getGameRef()
         .child('players/' + color)
         .transaction(function (player) {
             return player === null ? user.identity() : void 0;
@@ -127,12 +139,14 @@ module.exports = BaseState.extend({
     },
     _startGame: function (options) {
         this.playingState = options.role;
+        this.ready = true;
 
         if (options.role === 'white' || options.role === 'black') {
             this[options.role].set(options.user);
         }
 
-        this.gameRef.child('players').on('value', function (data) {
+        this._getGameRef().child('players').on('value', function (data) {
+            this.loading = false;
             data = data.val();
             console.log('PLAYERS', JSON.stringify(data, null, 2));
 
@@ -146,9 +160,15 @@ module.exports = BaseState.extend({
             }
         }, this);
 
-        this.gameRef.child('moves').on('value', function (data) {
-            data = data.val();
-            console.log('MOVES', JSON.stringify(data, null, 2));
+        this._getGameRef().child('moves').on('child_added', function (data) {
+            console.log(data.val().pgn);
+            this.chess.pgn = data.val().pgn;
         }, this);
+
+        this.listenTo(this.chess, 'change:move', this.sendMove);
+    },
+    sendMove: function (model, move) {
+        move.pgn = model.pgn;
+        this._getGameRef().child('moves').push(move);
     }
 });

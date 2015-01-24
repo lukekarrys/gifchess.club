@@ -1,7 +1,10 @@
 div
-  h1 Game
   div.alert.alert-danger(data-hook='error')
-  div.alert.alert-info(data-hook='loading')
-  div(data-hook='content')
-    h2(data-hook='white-player')
-    h2(data-hook='black-player')
+  .row(data-hook='content')
+    .col-xs-12.col-sm-7
+      p.visible-xs-block.player-info(data-hook='top-player')
+      div(data-hook='chess-game')
+      p.visible-xs-block.player-info(data-hook='bottom-player')
+    .col-xs-12.col-sm-5.hidden-xs
+      p.player-info(data-hook='top-player')
+      p.player-info(data-hook='bottom-player')

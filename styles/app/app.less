@@ -1,0 +1,67 @@
+[data-hook=page-container] {
+    margin-top: 20px;
+}
+
+[data-hook=board] {
+    width: 100%;
+}
+
+.player-info {
+    margin: 0;
+    font-weight: bold;
+}
+
+.board-container.loading, .loading .board-container {
+    .spinner { display: block; }
+    .board { opacity: 0.4; }
+}
+
+.board-container .spinner {
+    display: none;
+    position: absolute;
+    z-index: 100;
+    left: 50%;
+    margin-left: -40px;
+    top: 50%;
+    margin-top: -40px;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    margin: 100px auto;
+    background-color: #000;
+    border-radius: 100%;
+    -webkit-animation: scaleout 1.0s infinite ease-in-out;
+    animation: scaleout 1.0s infinite ease-in-out;
+}
+
+@-webkit-keyframes scaleout {
+  0% { -webkit-transform: scale(0.0) }
+  100% {
+     -webkit-transform: scale(1.0);
+     opacity: 0;
+  }
+}
+
+@keyframes scaleout {
+  0% {
+      transform: scale(0.0);
+      -webkit-transform: scale(0.0);
+  } 100% {
+      transform: scale(1.0);
+      -webkit-transform: scale(1.0);
+      opacity: 0;
+  }
+}
+
+.footer {
+    margin: 40px 0 20px;
+    padding: 20px 0;
+    border-top: 1px solid @gray-lighter;
+    color: lighten(@gray-light, 30%);
+    text-align: center;
+    a {
+        color: lighten(@gray-light, 15%);
+    }
+}

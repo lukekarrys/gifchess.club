@@ -50,17 +50,16 @@ module.exports = MainView.extend({
         app.logout();
     },
 
-    render: function () {
-        MainView.prototype.render.apply(this, arguments);
-        return this;
-    },
-
     updatePage: function () {
         MainView.prototype.updatePage.apply(this, arguments);
-        window.page = this.currentPage;
-        window.model = this.currentPage.model;
+        if (app.isLocal) {
+            window.page = this.currentPage;
+            window.model = this.currentPage.model;
+        }
         this.collapseNav();
-        track.pageview(window.location.pathname);
+        if (!app.isLocal) {
+            track.pageview(window.location.pathname);
+        }
     },
 
     collapseNav: function () {
