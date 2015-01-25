@@ -6,16 +6,18 @@ var Moves = require('ampersand-collection').extend({
             id: 'string',
             gif: 'string',
             pgn: 'string',
-            move: 'object'
+            san: 'string',
+            color: 'string',
+            from: 'string',
+            to: 'string',
+            piece: 'string',
+            flags: 'string'
         }
     })
 });
 var User = require('./user').extend({
-    collections: {
-        moves: Moves
-    }
+    collections: {moves: Moves}
 });
-
 
 
 module.exports = BaseState.extend({
@@ -164,11 +166,6 @@ module.exports = BaseState.extend({
             this.black.set(data.val() || {});
         }, this);
 
-        // this._getGameRef()
-        // .child('moves').once('value', this._getInitialMoves, this);
-
-        // var initial = true;
-
         this._getGameRef()
         .child('moves')
         .on('child_added', this.onAddMove, this);
@@ -182,11 +179,13 @@ module.exports = BaseState.extend({
     onAddMove: function (snapshot) {
         var data = snapshot.val();
         data.id = snapshot.key();
-        this.chess.set('pgn', data.pgn);
+        this.chess.set('pgn', data.pgn, {firebase: true});
         this.addMove(data);
     },
     onMoveUpdate: function (snapshot) {
-        this.addMove(snapshot.val(), {merge: true});
+        var data = snapshot.val();
+        data.id = snapshot.key();
+        this.addMove(data, {merge: true});
     },
     addMove: function (data, options) {
         if (data.color === 'w') {
@@ -196,9 +195,13 @@ module.exports = BaseState.extend({
             this.black.moves.add(data, options);
         }
     },
-    sendMove: function (model, move) {
+    sendMove: function (model, move, options) {
         var self = this;
-        if ((this.white.isMe && move.color === 'w') || (this.black.isMe && move.color === 'b')) {
+        var isWhite = this.white.isMe && move.color === 'w';
+        var isBlack = this.black.isMe && move.color === 'b';
+        var isFirebase = options && options.firebase;
+
+        if ((isWhite || isBlack) && !isFirebase) {
             move.pgn = model.pgn;
             var ref = this._getGameRef().child('moves').push(move);
             var key = ref.key();
@@ -206,5 +209,6 @@ module.exports = BaseState.extend({
                 self._getGameRef().child('moves/' + key).update({gif: data});
             });
         }
-    }
+    },
+    createGif: function () {}
 });

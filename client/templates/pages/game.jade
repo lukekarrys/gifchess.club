@@ -15,18 +15,13 @@ mixin camera()
   .modal(data-hook='modal')
   .alert.alert-danger(data-hook='error')
   .row(data-hook='content')
-    .col-xs-12.col-sm-7
-      //- .visible-xs-block.player-info(data-hook='top-player')
-      //-   span(data-hook='name')
-      //-   div(data-hook='gif')
+    .col-xs-8.col-sm-7
       div(data-hook='chess-game')
-      //- .visible-xs-block.player-info(data-hook='bottom-player')
-      //-   span(data-hook='name')
-      //-   div(data-hook='gif-camera')
-    .col-xs-12.col-sm-5
+    .col-xs-4.col-sm-5
       .player-info(data-hook='top-player')
         span(data-hook='name')
-        div(data-hook='gif')
+        ul(data-hook='moves')
       .player-info(data-hook='bottom-player')
         span(data-hook='name')
+        ul(data-hook='moves')
         div(data-hook='gif-camera')

@@ -4,16 +4,17 @@ var templates = require('../templates');
 var Board = require('../views/board');
 var GifCamera = require('../views/gifCamera');
 var CameraAccess = require('../views/cameraAccess');
+var Move = require('../views/move');
 var template = templates.pages.game;
-var playerDeps = ['model.white.username', 'model.black.username', 'model.white.isMe', 'model.black.isMe', 'defaultPlayer'];
+var playerDeps = ['model.white.username', 'model.black.username', 'defaultPlayer'];
 
 
 module.exports = BaseView.extend({
     template: template,
 
     bindings: {
-        topPlayer: {selector: '[data-hook=top-player] [data-hook=name]'},
-        bottomPlayer: {selector: '[data-hook=bottom-player] [data-hook=name]'},
+        topPlayerName: {selector: '[data-hook=top-player] [data-hook=name]'},
+        bottomPlayerName: {selector: '[data-hook=bottom-player] [data-hook=name]'},
         hidePlayers: {type: 'toggle', selector: '[data-hook=top-player], [data-hook=bottom-player]'},
         loading: {type: 'booleanClass', hook: 'chess-game'},
         errorMessage: [
@@ -49,22 +50,32 @@ module.exports = BaseView.extend({
                 return '';
             }
         },
-        topPlayer: {
-            deps: playerDeps,
+        bottomPlayer: {
+            deps: ['model.role'],
             fn: function () {
-                if (this.model.white.isMe) {
-                    return this.model.black.username || this.defaultPlayer;
+                if (this.model.role === 'white' || this.model.role === 'watcher') {
+                    return 'white';
+                } else {
+                    return 'black';
                 }
-                return this.model.white.username || this.defaultPlayer;
             }
         },
-        bottomPlayer: {
-            deps: playerDeps,
+        bottomPlayerName: {
+            deps: ['bottomPlayer'].concat(playerDeps),
             fn: function () {
-                if (this.model.white.isMe) {
-                    return this.model.white.username || this.defaultPlayer;
-                }
-                return this.model.black.username || this.defaultPlayer;
+                return this.model[this.bottomPlayer].username || this.defaultPlayer;
+            }
+        },
+        topPlayer: {
+            deps: ['bottomPlayer'],
+            fn: function () {
+                return (this.bottomPlayer === 'white') ? 'black' : 'white';
+            }
+        },
+        topPlayerName: {
+            deps: ['topPlayer'].concat(playerDeps),
+            fn: function () {
+                return this.model[this.topPlayer].username || this.defaultPlayer;
             }
         }
     },
@@ -121,7 +132,19 @@ module.exports = BaseView.extend({
     // CAMERA / GIF
     // ------------------------
     renderGifCollections: function () {
+        var white, black;
 
+        if (this.topPlayer === 'white') {
+            white = this.query('[data-hook=top-player] [data-hook=moves]');
+            black = this.query('[data-hook=bottom-player] [data-hook=moves]');
+        }
+        else {
+            white = this.query('[data-hook=bottom-player] [data-hook=moves]');
+            black = this.query('[data-hook=top-player] [data-hook=moves]');
+        }
+
+        this.renderCollection(this.model.white.moves, Move, white);
+        this.renderCollection(this.model.black.moves, Move, black);
     },
     renderCameraAccess: function () {
         this.cameraAccessView = this.registerSubview(
