@@ -17,5 +17,9 @@ module.exports = jQueryView(View).extend({
         var ns = '.cid-' + this.cid;
         this.$(window).off(ns);
         return View.prototype.remove.apply(this, arguments);
+    },
+    removeSubview: function (subview) {
+        var index = this._subviews.indexOf(subview);
+        index > -1 && this._subviews.splice(index, 1);
     }
 });

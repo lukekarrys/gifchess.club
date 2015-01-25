@@ -17,7 +17,8 @@ module.exports = MainView.extend({
 
     _domEvents: {
         'click [data-hook=login]': 'login',
-        'click [data-hook=logout]': 'logout'
+        'click [data-hook=logout]': 'logout',
+        'click [data-hook=refresh]': 'refresh'
     },
     events: function () {
         return _.extend({}, this._domEvents, MainView.prototype.events);
@@ -49,6 +50,10 @@ module.exports = MainView.extend({
     logout: function (e) {
         e.preventDefault();
         app.logout();
+    },
+    refresh: function (e) {
+        e.preventDefault();
+        location.reload(true);
     },
 
     updatePage: function () {

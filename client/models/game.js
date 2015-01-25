@@ -1,6 +1,20 @@
 var BaseState = require('./base');
-var User = require('./user');
 var Chess = require('ampersand-chess-state');
+var Moves = require('ampersand-collection').extend({
+    model: BaseState.extend({
+        props: {
+            gif: 'string',
+            pgn: 'string',
+            move: 'object'
+        }
+    })
+});
+var User = require('./user').extend({
+    collections: {
+        moves: Moves
+    }
+});
+
 
 
 module.exports = BaseState.extend({
@@ -149,21 +163,29 @@ module.exports = BaseState.extend({
             this.black.set(data.val() || {});
         }, this);
 
-        var initial = true;
+        // this._getGameRef()
+        // .child('moves').once('value', this._getInitialMoves, this);
+
+        // var initial = true;
+
         this._getGameRef()
         .child('moves')
-        .endAt()
-        .limitToLast(1)
         .on('child_added', function (snapshot) {
             // Dont animate the initial state
-            this.onMove(snapshot, {animate: !initial});
-            initial = false;
+            this.onMove(snapshot);
         }, this);
 
         this.listenTo(this.chess, 'change:move', this.sendMove);
     },
-    onMove: function (data, options) {
-        this.chess.set('pgn', data.val().pgn, options);
+    onMove: function (data) {
+        data = data.val();
+        this.chess.set('pgn', data.pgn, {fromEngine: true});
+        if (data.color === 'w') {
+            this.white.moves.add(data);
+        }
+        else if (data.color === 'b') {
+            this.black.moves.add(data);
+        }
     },
     sendMove: function (model, move) {
         move.pgn = model.pgn;

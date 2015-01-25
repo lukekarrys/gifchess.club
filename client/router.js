@@ -1,5 +1,6 @@
 // PAGES
 var HomePage = require('./pages/home');
+var RecentGames = require('./pages/recentGames');
 var GamePage = require('./pages/game');
 var UserPage = require('./pages/user');
 var _404Page = require('./pages/_404');
@@ -13,6 +14,7 @@ module.exports = {
     routes: {
         '': 'home',
         'games/new': 'newGame',
+        'games/recent': 'recentGames',
         'games/:id': 'game',
         'user/:id': 'user',
         '*path': '_404'
@@ -36,6 +38,10 @@ module.exports = {
                 id: 'new'
             })
         }));
+    },
+
+    recentGames: function () {
+        this.triggerPage(new RecentGames());
     },
 
     user: function (id) {

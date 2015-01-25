@@ -14,8 +14,10 @@
     "ampersand-router": "^1.0.7",
     "ampersand-state": "^4.4.4",
     "ampersand-view": "^7.2.0",
+    "attachmediastream": "^1.1.0",
     "bootstrap": "^3.3.2",
     "fastclick": "^1.0.3",
+    "getusermedia": "^1.2.0",
     "inherits": "^2.0.1",
     "jquery": "^2.1.3",
     "underscore": "^1.7.0"

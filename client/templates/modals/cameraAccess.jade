@@ -1,0 +1,25 @@
+mixin denied()
+  | If you've already denied camera access, please allow it and then 
+  a.alert-link(href="#", data-hook="refresh") refresh the page
+
+mixin prompt()
+  | Follow the browser prompts to allow camera access
+
+.modal.fade.welcome-dialog(tabindex="-1", role="dialog")
+  .modal-dialog
+    form.modal-content
+      .modal-header
+        h2.modal-title Camera Access Required
+
+      .modal-body
+        h3 Why?
+        p I just think it's more fun that way.
+
+        h3 I don't have a webcam
+        p
+          | In that case, you can check out some 
+          a(href='/games/recent') recently played games
+          |  to see what this is all about.
+
+      .modal-footer
+        div.alert.alert-info(data-hook='message')

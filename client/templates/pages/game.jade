@@ -6,13 +6,27 @@ mixin error()
   | This game does not exist. Find a 
   a.alert-link(href='/games/new') new one?
 
-div
-  div.alert.alert-danger(data-hook='error')
+mixin camera()
+  | Please enable your camera. After doing that you need to 
+  a.alert-link(href='#', data-hook='refresh') refresh the page
+  | .
+
+.game-page
+  .modal(data-hook='modal')
+  .alert.alert-danger(data-hook='error')
   .row(data-hook='content')
     .col-xs-12.col-sm-7
-      p.visible-xs-block.player-info(data-hook='top-player')
+      //- .visible-xs-block.player-info(data-hook='top-player')
+      //-   span(data-hook='name')
+      //-   div(data-hook='gif')
       div(data-hook='chess-game')
-      p.visible-xs-block.player-info(data-hook='bottom-player')
-    .col-xs-12.col-sm-5.hidden-xs
-      p.player-info(data-hook='top-player')
-      p.player-info(data-hook='bottom-player')
+      //- .visible-xs-block.player-info(data-hook='bottom-player')
+      //-   span(data-hook='name')
+      //-   div(data-hook='gif-camera')
+    .col-xs-12.col-sm-5
+      .player-info(data-hook='top-player')
+        span(data-hook='name')
+        div(data-hook='gif')
+      .player-info(data-hook='bottom-player')
+        span(data-hook='name')
+        div(data-hook='gif-camera')

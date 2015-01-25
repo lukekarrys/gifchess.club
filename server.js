@@ -37,14 +37,9 @@ var config = {
         fixPath('node_modules/jquery/dist/jquery.js'),
         fixPath('client/libraries/chessboard-0.3.0.js'),
         fixPath('node_modules/bootstrap/js/transition.js'),
-        fixPath('node_modules/bootstrap/js/alert.js'),
-        fixPath('node_modules/bootstrap/js/button.js'),
         fixPath('node_modules/bootstrap/js/dropdown.js'),
         fixPath('node_modules/bootstrap/js/collapse.js'),
-        fixPath('node_modules/bootstrap/js/modal.js'),
-        fixPath('node_modules/bootstrap/js/affix.js'),
-        fixPath('node_modules/bootstrap/js/tooltip.js'),
-        fixPath('node_modules/bootstrap/js/popover.js')
+        fixPath('node_modules/bootstrap/js/modal.js')
     ],
     stylesheets: [
         fixPath('styles/chessboard-0.3.0.css'),

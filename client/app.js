@@ -13,7 +13,9 @@ var App = State.extend({
         env: ['string', true, window.location.host.split('.')[0].split(':')[0]],
         name: ['string', true, 'GifChess'],
         id: ['string', true, 'ss15-luke-js'],
-        rendered: ['boolean', true, false]
+        rendered: ['boolean', true, false],
+        stream: 'object',
+        streamRequest: 'boolean'
     },
 
     derived: {
