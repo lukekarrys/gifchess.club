@@ -32,6 +32,7 @@ module.exports = Modal.extend({
         Modal.prototype.render.apply(this, arguments);
         this.listenTo(this.stream, 'change:streamSuccess', function () {
             if (this.stream.streamSuccess) {
+                app.localStorage('cameraAccess', true);
                 this.hideModal();
             }
         });

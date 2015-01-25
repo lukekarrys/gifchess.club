@@ -120,7 +120,32 @@ var App = State.extend({
     _onAuth: function (auth) {
         this.me.auth(auth);
         this.renderMainView();
-    }
+    },
+
+    // ------------------------
+    // LOCALSTORAGE
+    // ------------------------
+    localStorage: function (key, val) {
+            var localStorageKey = this.lsKey;
+            var current = localStorage[localStorageKey] || '{}';
+
+            try {
+                current = JSON.parse(current);
+            } catch (e) {
+                current = {};
+            }
+            
+            if (key && typeof val !== 'undefined') {
+                current[key] = val;
+                localStorage[localStorageKey] = JSON.stringify(current);
+                return val;
+            } else if (key) {
+                return current[key];
+            }
+        },
+        __reset: function () {
+            localStorage[this.lsKey] = '{}';
+        }
 });
 
 
