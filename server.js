@@ -61,7 +61,10 @@ var config = {
                     lessPath: fixPath('node_modules/bootstrap/less/bootstrap.less'),
                     relativeTo: fixPath('styles'),
                     after: {
-                        variables: 'theme/variables.less',
+                        variables: [
+                            'theme/yeti-theme.less',
+                            'theme/yeti-variables.less',
+                        ]
                     },
                     append: 'app/app.less'
                 }).build(),

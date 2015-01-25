@@ -158,12 +158,14 @@ module.exports = BaseState.extend({
             }
         }, this);
 
+        var initial = true;
         this._getGameRef()
         .child('moves')
         .endAt()
         .limit(1)
         .on('child_added', function (snapshot) {
-            this.onMove(snapshot, {animate: false});
+            this.onMove(snapshot, {animate: !initial});
+            initial = false;
         }, this);
 
         this.listenTo(this.chess, 'change:move', this.sendMove);
@@ -172,6 +174,7 @@ module.exports = BaseState.extend({
         this.chess.set('pgn', data.val().pgn, options);
     },
     sendMove: function (model, move) {
+        console.log('send move', move);
         move.pgn = model.pgn;
         this._getGameRef().child('moves').push(move);
     }
