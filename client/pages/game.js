@@ -13,6 +13,8 @@ module.exports = BaseView.extend({
     template: template,
 
     bindings: {
+        'activeTop': {type: 'booleanClass', name: 'active', hook: 'top-player'},
+        'activeBottom': {type: 'booleanClass', name: 'active', hook: 'bottom-player'},
         topPlayerName: {selector: '[data-hook=top-player] [data-hook=name]'},
         bottomPlayerName: {selector: '[data-hook=bottom-player] [data-hook=name]'},
         'model.loading': [
@@ -76,6 +78,24 @@ module.exports = BaseView.extend({
             deps: ['topPlayer'].concat(playerDeps),
             fn: function () {
                 return this.model[this.topPlayer].username || this.defaultPlayer;
+            }
+        },
+        activePlayer: {
+            deps: ['topPlayer', 'bottomPlayer', 'model.chess.turn'],
+            fn: function () {
+                return this.model.chess.turn === this.topPlayer ? 'top' : 'bottom';
+            }
+        },
+        activeTop: {
+            deps: ['activePlayer'],
+            fn: function () {
+                return this.activePlayer === 'top';
+            }
+        },
+        activeBottom: {
+            deps: ['activePlayer'],
+            fn: function () {
+                return this.activePlayer === 'bottom';
             }
         }
     },
