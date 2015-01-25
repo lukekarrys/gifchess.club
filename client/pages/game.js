@@ -17,7 +17,7 @@ module.exports = BaseView.extend({
         bottomPlayerName: {selector: '[data-hook=bottom-player] [data-hook=name]'},
         'model.loading': [
             {type: 'booleanClass', hook: 'chess-game'},
-            {type: 'booleanClass', no: 'col-sm-7', yes: 'col-xs-offset-2', hook: 'board-col'}
+            { type: 'booleanClass', hook: 'board-col'}
         ],
         hideDuringLoading: [
             {type: 'toggle', hook: 'player-col'},

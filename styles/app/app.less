@@ -11,14 +11,15 @@
     text-transform: capitalize;
 }
 
-.board-col {
-    transition: all 0.5s ease;
-}
-
 .board-container.loading,
 .loading .board-container {
     .spinner { display: block; }
     .board { opacity: 0.4; }
+}
+
+.board-col.loading {
+    width: 50% !important;
+    margin-left: 25% !important;
 }
 
 .board-container .spinner {
@@ -48,11 +49,17 @@
 .player-info {
     margin: 0;
     position: relative;
-    height: 210px;
+    height: 200px;
     width: 100%;
 
+    &:first-child {
+        height: 210px;
+    }
+
     @media (min-width: @screen-md-min) {
-        heigth: 400px;
+        &:first-child {
+            height: 257px;
+        }
     }
 
     span {
