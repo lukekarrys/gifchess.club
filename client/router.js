@@ -2,12 +2,10 @@
 var HomePage = require('./pages/home');
 var RecentGames = require('./pages/recentGames');
 var GamePage = require('./pages/game');
-var UserPage = require('./pages/user');
 var _404Page = require('./pages/_404');
 
 // MODELS
 var Game = require('./models/game');
-var User = require('./models/user');
 
 
 module.exports = {
@@ -16,7 +14,6 @@ module.exports = {
         'games/new': 'newGame',
         'games/recent': 'recentGames',
         'games/:id': 'game',
-        'user/:id': 'user',
         '*path': '_404'
     },
 
@@ -42,14 +39,6 @@ module.exports = {
 
     recentGames: function () {
         this.triggerPage(new RecentGames());
-    },
-
-    user: function (id) {
-        this.triggerPage(new UserPage({
-            model: new User({
-                uid: id
-            })
-        }));
     },
 
     _404: function () {

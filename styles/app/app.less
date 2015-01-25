@@ -7,8 +7,13 @@
 }
 
 .board-status {
-    float: right;
+    text-align: center;
     text-transform: capitalize;
+    display: block;
+    padding: 5px;
+    @media (min-width: @screen-sm-min) {
+        float: right;
+    }
 }
 
 .board-container.loading,
