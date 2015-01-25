@@ -4,11 +4,9 @@ var templates = require('../templates');
 
 module.exports = Board.extend({
     template: templates.views.move,
-    props: {
-        current: ['boolean', true, true]
-    },
     bindings: {
-        current: {type: 'toggle'},
+        hide: {type: 'toggle'},
+        'model.active': {type: 'booleanClass'},
         'model.gif': {
             type: 'attribute',
             name: 'src',
@@ -26,6 +24,12 @@ module.exports = Board.extend({
             deps: ['model.gif'],
             fn: function () {
                 return !this.model.gif;
+            }
+        },
+        hide: {
+            deps: ['model.active'],
+            fn: function () {
+                return this.model.active;
             }
         }
     }

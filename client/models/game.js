@@ -1,7 +1,28 @@
 var _ = require('underscore');
 var BaseState = require('./base');
-var Chess = require('ampersand-chess-state');
+var AmpChess = require('ampersand-chess-state');
+var Chess = AmpChess.extend({
+    undo: function (options) {
+        var result = AmpChess.prototype.undo.call(this, options);
+        if (result) {
+            this.trigger('change:undo', this, result, options);
+        }
+        return result;
+    },
+    redo: function (options) {
+        var result = AmpChess.prototype.redo.call(this, options);
+        if (result) {
+            this.trigger('change:redo', this, result, options);
+        }
+        return result;
+    }
+});
 var Moves = require('ampersand-collection').extend({
+    activate: function (san) {
+        this.forEach(function (model) {
+            model.active = model.san === san;
+        });
+    },
     model: BaseState.extend({
         props: {
             id: 'string',
@@ -13,6 +34,9 @@ var Moves = require('ampersand-collection').extend({
             to: 'string',
             piece: 'string',
             flags: 'string'
+        },
+        session: {
+            active: ['boolean', true, true]
         }
     }),
     comparator: function (a, b) {
@@ -194,6 +218,36 @@ module.exports = BaseState.extend({
         .on('child_added', this.updateGifMove, this);
 
         this.listenTo(this.chess, 'change:move', this.sendMove);
+        this.listenTo(this.chess, 'change:undo', this.onUndo);
+        this.listenTo(this.chess, 'change:redo', this.onRedo);
+    },
+    onUndo: function (model) {
+        var move;
+        if (model.turn === 'black') {
+            move = model.history[model.history.length - 2];
+            if (move) {
+                this.black.moves.activate(move);
+            }
+        } else if (model.turn === 'white') {
+            move = model.history[model.history.length - 2];
+            if (move) {
+                this.white.moves.activate(move);
+            }
+        }
+    },
+    onRedo: function (model) {
+        var move;
+        if (model.turn === 'white') {
+            move = model.history[model.history.length - 1];
+            if (move) {
+                this.black.moves.activate(move);
+            }
+        } else if (model.turn === 'black') {
+            move = model.history[model.history.length - 1];
+            if (move) {
+                this.white.moves.activate(move);
+            }
+        }
     },
     updatePgnMove: function (snapshot) {
         var data = snapshot.val();
