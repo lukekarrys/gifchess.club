@@ -14,7 +14,10 @@ var Moves = require('ampersand-collection').extend({
             piece: 'string',
             flags: 'string'
         }
-    })
+    }),
+    comparator: function (a, b) {
+        return a.pgn.length - b.pgn.length;
+    }
 });
 var User = require('./user').extend({
     collections: {moves: Moves}
@@ -82,15 +85,12 @@ module.exports = BaseState.extend({
     },
     _findOpenGames: function () {
         var openRef = app.firebase.child('open_games');
-
-        openRef.once('value', function (openGames) {
+        openRef.limitToFirst(1).once('value', function (openGames) {
             var numGames = openGames.numChildren();
             var id;
 
             if (numGames === 0) {
-                id = openRef.push({
-                    open: true
-                }).key();
+                id = openRef.push({open: true}).key();
             } else {
                 var val = openGames.val();
                 id = Object.keys(val)[0];
@@ -102,14 +102,7 @@ module.exports = BaseState.extend({
         }.bind(this));
     },
     _findOpenColors: function () {
-        this._getGameRef().once('value', function (gameSS) {
-            var game = gameSS.val();
-            if (game === null && !this.initNew) {
-                this.error = 'NOT_EXIST';
-            } else {
-                this._getGameRef().child('players').once('value', this._attemptJoin.bind(this));
-            }
-        }, this);
+        this._getGameRef().child('players').once('value', this._attemptJoin.bind(this));
     },
     _attemptJoin: function (data) {
         var players = data.val();
@@ -175,33 +168,42 @@ module.exports = BaseState.extend({
 
         this._getGameRef()
         .child('moves')
-        .on('child_added', this.onAddMove, this);
+        .limitToLast(2)
+        .once('value', this.getInitialState, this);
+    },
+    getInitialState: function (snapshot) {
+        snapshot.forEach(this.updatePgnMove.bind(this));
 
         this._getGameRef()
         .child('moves')
-        .on('child_changed', this.onMoveUpdate, this);
+        .on('child_added', this.updatePgnMove, this);
+
+        this._getGameRef()
+        .child('moves')
+        .on('child_changed', this.addMergeMove, this);
 
         this.listenTo(this.chess, 'change:move', this.sendMove);
     },
-    onAddMove: function (snapshot) {
+    updatePgnMove: function (snapshot) {
         var data = snapshot.val();
-        data.id = snapshot.key();
-        if (!data.pgn) return;
-        this.chess.set('pgn', data.pgn, {firebase: true});
-        this.addMove(data);
-    },
-    onMoveUpdate: function (snapshot) {
-        var data = snapshot.val();
-        data.id = snapshot.key();
-        this.addMove(data, {merge: true});
-    },
-    addMove: function (data, options) {
-        if (data.color === 'white') {
-            this.white.moves.add(data, options);
+        this.addMergeMove(snapshot);
+        // Only update internal engine if we are increasing the pgn
+        if (data.pgn && data.pgn.length > this.chess.pgn.length) {
+            this.chess.set('pgn', data.pgn, {firebase: true});
         }
-        else if (data.color === 'black') {
-            this.black.moves.add(data, options);
+    },
+    addMergeMove: function (snapshot) {
+        var data, id;
+
+        if (snapshot.val && snapshot.key) {
+            id = snapshot.key();
+            data = snapshot.val();
+            data.id = id;
+        } else {
+            data = snapshot;
         }
+
+        this[data.color].moves.add(data, {merge: true});
     },
     sendMove: function (model, move, options) {
         var self = this;
@@ -219,5 +221,8 @@ module.exports = BaseState.extend({
             });
         }
     },
-    createGif: function () {}
+    createGif: function () {
+        // This gets overriden in the parent view
+        // but leave this here so no errors happen
+    }
 });

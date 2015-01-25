@@ -47,7 +47,7 @@ module.exports = {
     user: function (id) {
         this.triggerPage(new UserPage({
             model: new User({
-                id: id
+                uid: id
             })
         }));
     },

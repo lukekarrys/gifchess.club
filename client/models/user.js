@@ -1,4 +1,5 @@
 var BaseState = require('./base');
+var _ = require('underscore');
 
 
 module.exports = BaseState.extend({
@@ -56,6 +57,12 @@ module.exports = BaseState.extend({
         return this.pick('uid', 'username');
     },
 
+    fetch: function () {
+        app.firebase.child('users').child(this.uid).on('value', function (snapshot) {
+            this.set(snapshot.val());
+        }, this);
+    },
+
     auth: function (data) {
         if (!data) {
             this.clear();
@@ -71,6 +78,7 @@ module.exports = BaseState.extend({
                     username: data.twitter.username,
                     avatar: data.twitter.cachedUserProfile.profile_image_url
                 });
+                app.firebase.child('users').child(data.uid).set(_.omit(this.toJSON(), 'uid'));
             }
         }
     }

@@ -68,6 +68,7 @@ var App = State.extend({
     renderMainView: function () {
         if (this.rendered) return;
         this.rendered = true;
+
         jQuery(function () {
             attachFastClick(document.body);
 
