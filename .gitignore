@@ -31,3 +31,4 @@ node_modules
 _deploy
 client/templates.js
 styles/app.css
+.divshot-cache
