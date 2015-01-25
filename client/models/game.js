@@ -33,6 +33,7 @@ module.exports = BaseState.extend({
     session: {
         id: 'string',
         error: 'string',
+        loadingInitial: ['boolean', true, true],
         playingState: {
             type: 'string',
             default: 'none',
@@ -53,9 +54,9 @@ module.exports = BaseState.extend({
             }
         },
         loading: {
-            deps: ['playingState'],
+            deps: ['playingState', 'loadingInitial'],
             fn: function () {
-                return this.playingState === 'none' || this.playingState === 'joining';
+                return this.playingState === 'none' || this.playingState === 'joining' || this.loadingInitial;
             }
         }
     },
@@ -172,6 +173,7 @@ module.exports = BaseState.extend({
         .once('value', this.getInitialState, this);
     },
     getInitialState: function (snapshot) {
+        this.loadingInitial = false;
         snapshot.forEach(this.updatePgnMove.bind(this));
 
         this._getGameRef()
