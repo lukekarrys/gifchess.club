@@ -11,7 +11,8 @@ module.exports = MainView.extend({
     template: templates.app,
 
     props: {
-        me: 'state'
+        me: 'state',
+        pageTitle: 'string'
     },
 
     _domEvents: {
@@ -51,11 +52,18 @@ module.exports = MainView.extend({
     },
 
     updatePage: function () {
+        if (this.currentPage) {
+            this.stopListening(this.currentPage);
+        }
         MainView.prototype.updatePage.apply(this, arguments);
         if (app.isLocal) {
             window.page = this.currentPage;
             window.model = this.currentPage.model;
         }
+        this.listenTo(this.currentPage, 'change:pageTitle', function () {
+            this.pageTitle = this.currentPage.pageTitle;
+        });
+        this.pageTitle = this.currentPage.pageTitle;
         this.collapseNav();
         if (!app.isLocal) {
             track.pageview(window.location.pathname);

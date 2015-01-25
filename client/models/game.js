@@ -16,8 +16,7 @@ module.exports = BaseState.extend({
             type: 'string',
             default: 'none',
             values: ['none', 'watcher', 'black', 'white', 'joining']
-        },
-        loading: 'boolean'
+        }
     },
     derived: {
         newGame: {
@@ -48,7 +47,6 @@ module.exports = BaseState.extend({
             if (this.newGame) {
                 this.error = 'AUTH';
             } else {
-                this.loading = true;
                 this._startGame({
                     role: 'watcher'
                 });
@@ -143,27 +141,21 @@ module.exports = BaseState.extend({
             this[options.role].set(options.user);
         }
 
-        this._getGameRef().child('players').on('value', function (data) {
-            this.loading = false;
-            data = data.val();
-            console.log('PLAYERS', JSON.stringify(data, null, 2));
+        this._getGameRef().child('players/white').on('value', function (data) {
+            this.white.set(data.val() || {});
+        }, this);
 
-            if (data) {
-                if (data.white) {
-                    this.white.set(data.white);
-                }
-                if (data.black) {
-                    this.black.set(data.black);
-                }
-            }
+        this._getGameRef().child('players/black').on('value', function (data) {
+            this.black.set(data.val() || {});
         }, this);
 
         var initial = true;
         this._getGameRef()
         .child('moves')
         .endAt()
-        .limit(1)
+        .limitToLast(1)
         .on('child_added', function (snapshot) {
+            // Dont animate the initial state
             this.onMove(snapshot, {animate: !initial});
             initial = false;
         }, this);
@@ -174,7 +166,6 @@ module.exports = BaseState.extend({
         this.chess.set('pgn', data.val().pgn, options);
     },
     sendMove: function (model, move) {
-        console.log('send move', move);
         move.pgn = model.pgn;
         this._getGameRef().child('moves').push(move);
     }

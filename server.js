@@ -51,7 +51,9 @@ var config = {
         fixPath('styles/app.css')
     ],
     beforeBuildJS: function () {
-        templatizer(fixPath('client/templates'), fixPath('client/templates.js'));
+        templatizer(fixPath('client/templates'), fixPath('client/templates.js'), {
+            dontRemoveMixins: true
+        });
     },
     beforeBuildCSS: function (cb) {
         lessitizer({

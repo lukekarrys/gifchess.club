@@ -1,3 +1,11 @@
+mixin auth()
+  | You must be logged in to start a new game. Try 
+  a.alert-link(herf='#', data-hook='login') logging in with Twitter.
+
+mixin error()
+  | This game does not exist. Find a 
+  a.alert-link(href='/games/new') new one?
+
 div
   div.alert.alert-danger(data-hook='error')
   .row(data-hook='content')

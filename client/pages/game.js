@@ -1,15 +1,17 @@
 var _ = require('underscore');
-var BaseView = require('../views/base');
+var BaseView = require('./base');
 var templates = require('../templates');
 var Board = require('../views/board');
+var template = templates.pages.game;
 
 
 module.exports = BaseView.extend({
-    template: templates.pages.game,
+    template: template,
 
     bindings: {
         topPlayer: {hook: 'top-player'},
         bottomPlayer: {hook: 'bottom-player'},
+        hidePlayers: {type: 'toggle', selector: '[data-hook=top-player], [data-hook=bottom-player]'},
         loading: {type: 'booleanClass', hook: 'chess-game'},
         errorMessage: [
             {type: 'toggle', yes: '[data-hook=error]', no: '[data-hook=content]'},
@@ -17,23 +19,29 @@ module.exports = BaseView.extend({
         ]
     },
     props: {
-        defaultPlayer: ['string', true, 'Loading player info...']
+        defaultPlayer: ['string', true, 'Waiting for player...']
     },
     derived: {
-        loading: {
-            deps: ['model.playingState', 'model.loading'],
+        hidePlayers: {
+            deps: ['loading'],
             fn: function () {
-                return !!(this.model.playingState === 'none' || this.model.loading);
+                return !this.loading;
+            }
+        },
+        loading: {
+            deps: ['model.playingState'],
+            fn: function () {
+                return this.model.playingState === 'none';
             }
         },
         errorMessage: {
             deps: ['model.error'],
             fn: function () {
                 if (this.model.error === 'NOT_EXIST') {
-                    return 'This game does not exist. Find a <a href="/games/new">new one?</a>';
+                    return template.error();
                 }
                 else if (this.model.error === 'AUTH') {
-                    return 'You must be logged in to start a new game. Try <a href="#" data-hook="login">logging in with Twitter.</a>';
+                    return template.auth();
                 }
                 return '';
             }
@@ -55,7 +63,7 @@ module.exports = BaseView.extend({
                 }
                 return this.model.black.username || this.defaultPlayer;
             }
-        },
+        }
     },
     initialize: function () {
         this.listenTo(this.model, 'change:id', function () {
