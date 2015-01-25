@@ -110,13 +110,11 @@ module.exports = BaseView.extend({
         this.renderBoard();
         this.listenToOnce(this.model, 'change:role', this.checkRole);
         this.listenToOnce(app, 'change:streamSuccess', this.checkStream);
+        this.renderGifCollections();
         return this;
     },
     checkRole: function () {
-        if (this.model.role === 'watcher') {
-            this.renderGifCollections();
-        }
-        else {
+        if (this.model.role !== 'watcher') {
             this.renderCameraAccess();
             app.getUserMedia();
         }
@@ -178,7 +176,6 @@ module.exports = BaseView.extend({
     checkStream: function () {
         if (app.streamSuccess) {
             this.renderGifCamera();
-            this.renderGifCollections();
         }
     },
     renderGifCamera: function () {
