@@ -17,9 +17,9 @@ module.exports = Modal.extend({
     },
     derived: {
         message: {
-            deps: ['stream.permissionDenied'],
+            deps: ['stream.streamDenied'],
             fn: function () {
-                return this.stream.permissionDenied ?
+                return this.stream.streamDenied ?
                     this.template.denied() :
                     this.template.prompt();
             }
@@ -27,5 +27,14 @@ module.exports = Modal.extend({
     },
     bindings: {
         message: {hook: 'message', type: 'innerHTML'}
+    },
+    render: function () {
+        Modal.prototype.render.apply(this, arguments);
+        this.listenTo(this.stream, 'change:streamSuccess', function () {
+            if (this.stream.streamSuccess) {
+                this.hideModal();
+            }
+        });
+        return this;
     }
 });

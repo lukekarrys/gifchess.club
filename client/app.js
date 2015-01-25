@@ -1,5 +1,6 @@
 /* globals jQuery, Firebase */
 
+var getUserMedia = require('getusermedia');
 var attachFastClick = require('fastclick');
 var State = require('ampersand-state');
 
@@ -15,7 +16,8 @@ var App = State.extend({
         id: ['string', true, 'ss15-luke-js'],
         rendered: ['boolean', true, false],
         stream: 'object',
-        streamRequest: 'boolean'
+        streamRequest: 'boolean',
+        streamError: 'object'
     },
 
     derived: {
@@ -42,7 +44,19 @@ var App = State.extend({
             fn: function () {
                 return new Firebase(this.firebaseUrl);
             }
-        }
+        },
+        streamDenied: {
+            deps: ['streamError'],
+            fn: function () {
+                return this.streamError && this.streamError.name === 'PermissionDeniedError';
+            }
+        },
+        streamSuccess: {
+            deps: ['stream', 'streamError'],
+            fn: function () {
+                return !!this.stream && !this.streamError;
+            }
+        },
     },
 
     initialize: function () {
@@ -68,6 +82,24 @@ var App = State.extend({
     },
 
     // ------------------------
+    // STREAM
+    // ------------------------
+    getUserMedia: function () {
+        if (!this.streamRequest) {
+            this.streamRequest = true;
+            getUserMedia({video: true, audio: false}, this.getStream.bind(this));
+        }
+    },
+    getStream: function (err, stream) {
+        this.streamRequest = false;
+        if (err) {
+            this.streamError = err;
+        } else {
+            this.stream = stream;
+        }
+    },
+
+    // ------------------------
     // AUTH
     // ------------------------
     login: function () {
@@ -87,31 +119,6 @@ var App = State.extend({
     _onAuth: function (auth) {
         this.me.auth(auth);
         this.renderMainView();
-    },
-
-    // ------------------------
-    // LOCAL STORAGE
-    // ------------------------
-    localStorage: function (key, val) {
-        var localStorageKey = this.lsKey;
-        var current = localStorage[localStorageKey] || '{}';
-
-        try {
-            current = JSON.parse(current);
-        } catch (e) {
-            current = {};
-        }
-        
-        if (key && typeof val !== 'undefined') {
-            current[key] = val;
-            localStorage[localStorageKey] = JSON.stringify(current);
-            return val;
-        } else if (key) {
-            return current[key];
-        }
-    },
-    __reset: function () {
-        localStorage[this.lsKey] = '{}';
     }
 });
 

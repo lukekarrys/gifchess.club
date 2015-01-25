@@ -16,12 +16,12 @@ module.exports = BaseView.extend({
 
         return this;
     },
-    closeModal: function () {
+    hideModal: function () {
         this.modal.modal('hide');
     },
     forceHideModal: function () {
         this.$el.removeClass('fade');
-        this.closeModal();
+        this.hideModal();
     },
     remove: function () {
         this.forceHideModal();

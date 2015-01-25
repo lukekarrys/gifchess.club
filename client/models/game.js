@@ -3,6 +3,7 @@ var Chess = require('ampersand-chess-state');
 var Moves = require('ampersand-collection').extend({
     model: BaseState.extend({
         props: {
+            id: 'string',
             gif: 'string',
             pgn: 'string',
             move: 'object'
@@ -170,25 +171,40 @@ module.exports = BaseState.extend({
 
         this._getGameRef()
         .child('moves')
-        .on('child_added', function (snapshot) {
-            // Dont animate the initial state
-            this.onMove(snapshot);
-        }, this);
+        .on('child_added', this.onAddMove, this);
+
+        this._getGameRef()
+        .child('moves')
+        .on('child_changed', this.onMoveUpdate, this);
 
         this.listenTo(this.chess, 'change:move', this.sendMove);
     },
-    onMove: function (data) {
-        data = data.val();
-        this.chess.set('pgn', data.pgn, {fromEngine: true});
+    onAddMove: function (snapshot) {
+        var data = snapshot.val();
+        data.id = snapshot.key();
+        this.chess.set('pgn', data.pgn);
+        this.addMove(data);
+    },
+    onMoveUpdate: function (snapshot) {
+        this.addMove(snapshot.val(), {merge: true});
+    },
+    addMove: function (data, options) {
         if (data.color === 'w') {
-            this.white.moves.add(data);
+            this.white.moves.add(data, options);
         }
         else if (data.color === 'b') {
-            this.black.moves.add(data);
+            this.black.moves.add(data, options);
         }
     },
     sendMove: function (model, move) {
-        move.pgn = model.pgn;
-        this._getGameRef().child('moves').push(move);
+        var self = this;
+        if ((this.white.isMe && move.color === 'w') || (this.black.isMe && move.color === 'b')) {
+            move.pgn = model.pgn;
+            var ref = this._getGameRef().child('moves').push(move);
+            var key = ref.key();
+            this.createGif(function (data) {
+                self._getGameRef().child('moves/' + key).update({gif: data});
+            });
+        }
     }
 });
