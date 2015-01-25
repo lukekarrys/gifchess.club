@@ -15,8 +15,14 @@ module.exports = BaseView.extend({
     bindings: {
         topPlayerName: {selector: '[data-hook=top-player] [data-hook=name]'},
         bottomPlayerName: {selector: '[data-hook=bottom-player] [data-hook=name]'},
-        hidePlayers: {type: 'toggle', selector: '[data-hook=top-player], [data-hook=bottom-player]'},
-        loading: {type: 'booleanClass', hook: 'chess-game'},
+        'model.loading': [
+            {type: 'booleanClass', hook: 'chess-game'},
+            {type: 'booleanClass', no: 'col-sm-7', yes: 'col-xs-offset-2', hook: 'board-col'}
+        ],
+        hideDuringLoading: [
+            {type: 'toggle', hook: 'player-col'},
+            {type: 'toggle', hook: 'status'},
+        ],
         errorMessage: [
             {type: 'toggle', yes: '[data-hook=error]', no: '[data-hook=content]'},
             {hook: 'error', type: 'innerHTML'}
@@ -26,16 +32,10 @@ module.exports = BaseView.extend({
         defaultPlayer: ['string', true, 'Waiting for player...']
     },
     derived: {
-        hidePlayers: {
-            deps: ['loading'],
+        hideDuringLoading: {
+            deps: ['model.loading'],
             fn: function () {
-                return !this.loading;
-            }
-        },
-        loading: {
-            deps: ['model.playingState'],
-            fn: function () {
-                return this.model.playingState === 'none';
+                return !this.model.loading;
             }
         },
         errorMessage: {
@@ -114,6 +114,8 @@ module.exports = BaseView.extend({
             },
             chess: this.model.chess
         }), this.queryByHook('chess-game'));
+
+        this._applyBindingsForKey('hideDuringLoading');
 
         this.bindWindowEvents({resize: 'onResize'});
         _.defer(_.bind(this.onResize, this));

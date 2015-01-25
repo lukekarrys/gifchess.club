@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var BaseState = require('./base');
 var Chess = require('ampersand-chess-state');
 var Moves = require('ampersand-collection').extend({
@@ -46,6 +47,12 @@ module.exports = BaseState.extend({
             deps: ['playingState'],
             fn: function () {
                 return ['black', 'white', 'watcher'].indexOf(this.playingState) > -1 ? this.playingState : 'watcher';
+            }
+        },
+        loading: {
+            deps: ['playingState'],
+            fn: function () {
+                return this.playingState === 'none' || this.playingState === 'joining';
             }
         }
     },
@@ -137,7 +144,7 @@ module.exports = BaseState.extend({
         this._getGameRef()
         .child('players/' + color)
         .transaction(function (player) {
-            return player === null ? user.identity() : void 0;
+            return player === null ? _.extend(user.identity(), {color: color}) : void 0;
         }, function (error, committed, snapshot) {
             if (committed) {
                 this._startGame({
@@ -179,6 +186,7 @@ module.exports = BaseState.extend({
     onAddMove: function (snapshot) {
         var data = snapshot.val();
         data.id = snapshot.key();
+        if (!data.pgn) return;
         this.chess.set('pgn', data.pgn, {firebase: true});
         this.addMove(data);
     },
@@ -188,10 +196,10 @@ module.exports = BaseState.extend({
         this.addMove(data, {merge: true});
     },
     addMove: function (data, options) {
-        if (data.color === 'w') {
+        if (data.color === 'white') {
             this.white.moves.add(data, options);
         }
-        else if (data.color === 'b') {
+        else if (data.color === 'black') {
             this.black.moves.add(data, options);
         }
     },
@@ -203,6 +211,7 @@ module.exports = BaseState.extend({
 
         if ((isWhite || isBlack) && !isFirebase) {
             move.pgn = model.pgn;
+            move.color = move.color === 'w' ? 'white' : 'black';
             var ref = this._getGameRef().child('moves').push(move);
             var key = ref.key();
             this.createGif(function (data) {
