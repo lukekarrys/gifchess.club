@@ -61,6 +61,7 @@ var config = {
                         variables: [
                             'theme/yeti-theme.less',
                             'theme/yeti-variables.less',
+                            'theme/override.less',
                         ]
                     },
                     append: 'app/app.less'

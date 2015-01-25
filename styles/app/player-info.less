@@ -1,19 +1,31 @@
 .player-info-container {
+    &:first-child {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    @media (max-width: 600px) {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
     @media (min-width: @screen-sm-min) {
         &:first-child {
-            margin-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
     }
 
     @media (min-width: @screen-md-min) {
         &:first-child {
             margin-bottom: 40px;
+            margin-top: 40px;
         }
     }
 
     @media (min-width: @screen-lg-min) {
         &:first-child {
-            margin-top: 40px;
+            margin-top: 70px;
             margin-bottom: 60px;
         }
     }

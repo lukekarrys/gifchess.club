@@ -1,4 +1,13 @@
 .board-container
   .spinner(data-hook='loading')
-  .board(data-hook='board')
   span.board-status(data-hook='status')
+  .btn-group(data-hook='controls')
+    button.btn.btn-default(type='button', data-hook='first')
+      span.glyphicon.glyphicon-fast-backward
+    button.btn.btn-default(type='button', data-hook='undo')
+      span.glyphicon.glyphicon-backward
+    button.btn.btn-default(type='button', data-hook='redo')
+      span.glyphicon.glyphicon-forward
+    button.btn.btn-default(type='button', data-hook='last')
+      span.glyphicon.glyphicon-fast-forward
+  .board(data-hook='board')

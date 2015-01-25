@@ -23,7 +23,8 @@ module.exports = BaseView.extend({
         ],
         hideDuringLoading: [
             {type: 'toggle', hook: 'player-col'},
-            {type: 'toggle', hook: 'status'}
+            {type: 'toggle', hook: 'status'},
+            {type: 'toggle', hook: 'controls'}
         ],
         errorMessage: [
             {type: 'toggle', yes: '[data-hook=error]', no: '[data-hook=content]'},
