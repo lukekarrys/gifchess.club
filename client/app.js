@@ -126,26 +126,26 @@ var App = State.extend({
     // LOCALSTORAGE
     // ------------------------
     localStorage: function (key, val) {
-            var localStorageKey = this.lsKey;
-            var current = localStorage[localStorageKey] || '{}';
+        var localStorageKey = this.lsKey;
+        var current = localStorage[localStorageKey] || '{}';
 
-            try {
-                current = JSON.parse(current);
-            } catch (e) {
-                current = {};
-            }
-            
-            if (key && typeof val !== 'undefined') {
-                current[key] = val;
-                localStorage[localStorageKey] = JSON.stringify(current);
-                return val;
-            } else if (key) {
-                return current[key];
-            }
-        },
-        __reset: function () {
-            localStorage[this.lsKey] = '{}';
+        try {
+            current = JSON.parse(current);
+        } catch (e) {
+            current = {};
         }
+        
+        if (key && typeof val !== 'undefined') {
+            current[key] = val;
+            localStorage[localStorageKey] = JSON.stringify(current);
+            return val;
+        } else if (key) {
+            return current[key];
+        }
+    },
+    __reset: function () {
+        localStorage[this.lsKey] = '{}';
+    }
 });
 
 

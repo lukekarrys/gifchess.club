@@ -167,6 +167,7 @@ module.exports = BaseState.extend({
             this.black.set(data.val() || {});
         }, this);
 
+        // Get the last move for each player
         this._getGameRef()
         .child('moves')
         .limitToLast(2)
@@ -174,7 +175,11 @@ module.exports = BaseState.extend({
     },
     getInitialState: function (snapshot) {
         this.loadingInitial = false;
-        snapshot.forEach(this.updatePgnMove.bind(this));
+        snapshot.forEach(function (moveSS) {
+            var key = moveSS.key();
+            this._getGameRef().child('gifs/' + key).once('value', this.updateGifMove, this);
+            this.updatePgnMove(moveSS);
+        }.bind(this));
 
         this._getGameRef()
         .child('moves')
@@ -183,6 +188,10 @@ module.exports = BaseState.extend({
         this._getGameRef()
         .child('moves')
         .on('child_changed', this.addMergeMove, this);
+
+        this._getGameRef()
+        .child('gifs')
+        .on('child_added', this.updateGifMove, this);
 
         this.listenTo(this.chess, 'change:move', this.sendMove);
     },
@@ -193,6 +202,11 @@ module.exports = BaseState.extend({
         if (data.pgn && data.pgn.length > this.chess.pgn.length) {
             this.chess.set('pgn', data.pgn, {firebase: true});
         }
+    },
+    updateGifMove: function (snapshot) {
+        var id = snapshot.key();
+        var gif = snapshot.val();
+        this.addMergeMove({id: id, gif: gif});
     },
     addMergeMove: function (snapshot) {
         var data, id;
@@ -205,7 +219,19 @@ module.exports = BaseState.extend({
             data = snapshot;
         }
 
-        this[data.color].moves.add(data, {merge: true});
+        var collection;
+        if (data.color) {
+            collection = this[data.color].moves;
+        }
+        else if (this.white.moves.get(data.id)) {
+            collection = this.white.moves;
+        }
+        else if (this.black.moves.get(data.id)) {
+            collection = this.black.moves;
+        }
+        if (collection) {
+            collection.add(data, {merge: true});
+        }
     },
     sendMove: function (model, move, options) {
         var self = this;
@@ -219,7 +245,7 @@ module.exports = BaseState.extend({
             var ref = this._getGameRef().child('moves').push(move);
             var key = ref.key();
             this.createGif(function (data) {
-                self._getGameRef().child('moves/' + key).update({gif: data});
+                self._getGameRef().child('gifs/' + key).set(data);
             });
         }
     },

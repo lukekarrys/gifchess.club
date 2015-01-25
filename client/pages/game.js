@@ -17,11 +17,11 @@ module.exports = BaseView.extend({
         bottomPlayerName: {selector: '[data-hook=bottom-player] [data-hook=name]'},
         'model.loading': [
             {type: 'booleanClass', hook: 'chess-game'},
-            { type: 'booleanClass', hook: 'board-col'}
+            {type: 'booleanClass', hook: 'board-col'}
         ],
         hideDuringLoading: [
             {type: 'toggle', hook: 'player-col'},
-            {type: 'toggle', hook: 'status'},
+            {type: 'toggle', hook: 'status'}
         ],
         errorMessage: [
             {type: 'toggle', yes: '[data-hook=error]', no: '[data-hook=content]'},
@@ -106,21 +106,20 @@ module.exports = BaseView.extend({
     // ------------------------
     renderBoard: function () {
         this.boardView = this.renderSubview(new Board({
+            chess: this.model.chess,
             role: this.model.role,
             Chessboard: window.ChessBoard,
             boardConfig: {
                 pieceTheme: '/img/{piece}.png',
                 showNotation: false
-            },
-            chess: this.model.chess
+            }
         }), this.queryByHook('chess-game'));
 
+        this.listenTo(this.model, 'change:role', this.setBoardRole);
         this._applyBindingsForKey('hideDuringLoading');
 
         this.bindWindowEvents({resize: 'onResize'});
         _.defer(_.bind(this.onResize, this));
-
-        this.listenTo(this.model, 'change:role', this.setBoardRole);
     },
     setBoardRole: function () {
         this.boardView.role = this.model.role;
