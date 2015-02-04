@@ -110,7 +110,11 @@ module.exports = BaseView.extend({
         this.renderBoard();
         this.listenToOnce(this.model, 'change:role', this.checkRole);
         this.listenToOnce(app, 'change:streamSuccess', this.checkStream);
-        this.renderGifCollections();
+        if (this.model.playerSet) {
+            this.renderGifCollections();
+        } else {
+            this.listenToOnce(this.model, 'change:playerSet', this.renderGifCollections);
+        }
         return this;
     },
     checkRole: function () {

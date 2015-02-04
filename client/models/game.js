@@ -196,6 +196,9 @@ module.exports = BaseState.extend({
         .child('moves')
         .limitToLast(2)
         .once('value', this.getInitialState, this);
+
+        this.playerSet = true;
+        this.trigger('change:playerSet');
     },
     getInitialState: function (snapshot) {
         this.loadingInitial = false;
