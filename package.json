@@ -38,6 +38,9 @@
     "tape-run": "^0.3.0",
     "templatizer": "^1.1.1"
   },
+  "engines": {
+    "node": "^0.10.35"
+  },
   "homepage": "https://github.com/lukekarrys/gifchess.club",
   "license": "MIT",
   "main": "server.js",
@@ -49,7 +52,7 @@
   "scripts": {
     "build": "node server --build --minify",
     "codeship-deploy": "npm run divshot -- push production --token \"${DIVSHOT_TOKEN}\"",
-    "codeship-setup": "nvm install 0.10.35 && nvm use 0.10.35 && npm install -g npm@latest && npm install && npm run build",
+    "codeship-setup": "npm install && npm run build",
     "codeship-test": "npm test && npm run lint",
     "divshot": "divshot",
     "lint": "jshint .",
