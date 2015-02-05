@@ -51,8 +51,8 @@
   },
   "scripts": {
     "build": "node server --build --minify",
-    "codeship-deploy": "npm run divshot -- push production --token \"${DIVSHOT_TOKEN}\"",
-    "codeship-setup": "npm install && npm run build",
+    "codeship-deploy": "npm run divshot push production",
+    "codeship-setup": "npm install -g npm@latest && npm install && npm run build",
     "codeship-test": "npm test && npm run lint",
     "divshot": "divshot",
     "lint": "jshint .",
