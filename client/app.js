@@ -13,7 +13,7 @@ var App = State.extend({
         firebaseId: ['string', true, 'torid-inferno-617'],
         env: ['string', true, window.location.host.split('.')[0].split(':')[0]],
         name: ['string', true, 'GifChess'],
-        id: ['string', true, 'ss15-luke-js'],
+        id: ['string', true, 'gifchess'],
         rendered: ['boolean', true, false],
         stream: 'object',
         streamRequest: 'boolean',
