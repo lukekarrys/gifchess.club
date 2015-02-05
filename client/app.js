@@ -60,10 +60,6 @@ var App = State.extend({
     },
 
     initialize: function () {
-        // New domain
-        window.location.href = 'http://gifchess.club' + window.location.pathname;
-        return;
-
         window.app = this;
 
         this.me = new User();
