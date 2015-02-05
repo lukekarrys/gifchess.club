@@ -61,7 +61,8 @@ var App = State.extend({
 
     initialize: function () {
         // New domain
-        return window.location.href = '//gifchess.club' + window.location.pathname;
+        window.location.href = 'http://gifchess.club' + window.location.pathname;
+        return;
 
         window.app = this;
 
