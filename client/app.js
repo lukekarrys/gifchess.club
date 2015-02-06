@@ -3,6 +3,7 @@
 var getUserMedia = require('getusermedia');
 var attachFastClick = require('fastclick');
 var State = require('ampersand-state');
+var log = require('./helpers/log');
 
 var MainView = require('./views/main');
 var User = require('./models/user');
@@ -114,7 +115,7 @@ var App = State.extend({
             this.authWithOAuthRedirect('twitter', this._tryAuth.bind(this));
         }
         else if (err) {
-            console.error(err.code, err.message);
+            log.error(err.code, err.message);
         }
     },
     _onAuth: function (auth) {
