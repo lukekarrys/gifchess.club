@@ -1,6 +1,6 @@
 {
   "name": "ss15-luke-js",
-  "root": "./_deploy",
+  "root": "./build",
   "clean_urls": true,
   "cache_control": {
     "/assets/**": 31536000,

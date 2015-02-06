@@ -1,37 +1,26 @@
 /* jshint node:true */
 
-var express = require('express');
-var Moonboots = require('moonboots-express');
+
+var path = require('path');
+var fs = require('fs');
+var _ = require('underscore');
 var lessitizer = require('lessitizer');
 var templatizer = require('templatizer');
 var LessImportInserter = require('less-import-inserter');
-var Static = require('moonboots-static');
-var path = require('path');
 var jade = require('jade');
 
 function fixPath(pathString) {
     return path.resolve(path.normalize(pathString));
 }
-function quit(err) {
-    process.exit(err ? 1 : 0);
-}
 function argv(flag) {
     return process.argv.slice(2).indexOf('--' + flag) > -1;
 }
 
-var index = require('fs').readFileSync(fixPath('index.jade'));
-var renderIndex = function (ctx) { return jade.render(index, ctx); };
-var port = process.env.PORT || 3000;
-var appName = require('./package').name;
+var renderIndex = _.partial(jade.render, fs.readFileSync(fixPath('index.jade')));
 var options = {build: argv('build'), minify: argv('minify')};
-
-
 var config = {
-    jsFileName: appName,
-    cssFileName: appName,
     main: fixPath('client/app.js'),
     developmentMode: !options.minify,
-    resourcePrefix: (options.build || options.crawl) ? '/assets/' : '/',
     libraries: [
         fixPath('client/libraries/firebase.js'),
         fixPath('node_modules/jquery/dist/jquery.js'),
@@ -51,40 +40,45 @@ var config = {
         });
     },
     beforeBuildCSS: function (cb) {
+        var bootstrapWithTheme = new LessImportInserter({
+            lessPath: fixPath('node_modules/bootstrap/less/bootstrap.less'),
+            relativeTo: fixPath('styles'),
+            after: {variables: [
+                'theme/yeti-theme.less',
+                'theme/yeti-variables.less',
+                'theme/override.less'
+            ]},
+            append: 'app/app.less'
+        }).build();
         lessitizer({
             developmentMode: !options.minify,
+            outputDir: fixPath('styles'),
             files: {
-                less: new LessImportInserter({
-                    lessPath: fixPath('node_modules/bootstrap/less/bootstrap.less'),
-                    relativeTo: fixPath('styles'),
-                    after: {
-                        variables: [
-                            'theme/yeti-theme.less',
-                            'theme/yeti-variables.less',
-                            'theme/override.less',
-                        ]
-                    },
-                    append: 'app/app.less'
-                }).build(),
+                less: bootstrapWithTheme,
                 filename: 'app'
-            },
-            outputDir: fixPath('styles')
+            }
         }, cb);
     }
 };
 
 
 if (options.build) {
+    var Static = require('moonboots-static');
     new Static({
         verbose: true,
         moonboots: config,
         'public': fixPath('public'),
-        directory: fixPath('_deploy'),
+        directory: fixPath('build'),
         htmlSource: renderIndex,
-        cb: quit
+        cb: function (err) {
+            process.exit(err ? 1 : 0);
+        }
     });
 }
 else {
+    var express = require('express');
+    var Moonboots = require('moonboots-express');
+    var port = process.env.PORT || 3000;
     var expressApp = express();
     expressApp.use(express.static(fixPath('public')));
     new Moonboots({

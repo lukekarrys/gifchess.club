@@ -28,7 +28,7 @@ node_modules
 .lock-wscript
 
 # Custom
-_deploy
+build
 client/templates.js
 styles/app.css
 .divshot-cache

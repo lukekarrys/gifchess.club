@@ -1,4 +1,4 @@
 node_modules
-_deploy
+build
 client/templates.js
 client/libraries/
