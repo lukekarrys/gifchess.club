@@ -6,8 +6,7 @@
     "/fonts/**": 604800,
     "/img/**": 604800,
     "/*.min.js": 31536000,
-    "/*.min.css": 31536000,
-    "/**": "no-cache, no-store"
+    "/*.min.css": 31536000
   },
   "routes": {
     "/**": "index.html"
