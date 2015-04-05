@@ -7,36 +7,36 @@
     "url": "https://github.com/lukekarrys/gifchess.club/issues"
   },
   "dependencies": {
-    "ampersand-chess-state": "^0.1.5",
-    "ampersand-chess-view": "^0.2.0",
-    "ampersand-collection": "^1.4.0",
-    "ampersand-main-view": "^1.0.0",
-    "ampersand-router": "^1.0.7",
-    "ampersand-state": "^4.4.4",
-    "ampersand-view": "^7.2.0",
+    "ampersand-chess-state": "^0.1.6",
+    "ampersand-chess-view": "^0.2.1",
+    "ampersand-collection": "^1.4.5",
+    "ampersand-main-view": "^1.0.1",
+    "ampersand-router": "^2.1.0",
+    "ampersand-state": "^4.5.2",
+    "ampersand-view": "^7.3.0",
     "attachmediastream": "^1.1.0",
-    "bootstrap": "^3.3.2",
-    "fastclick": "^1.0.3",
-    "getusermedia": "^1.2.0",
+    "bootstrap": "^3.3.4",
+    "fastclick": "^1.0.6",
+    "getusermedia": "^1.2.1",
     "inherits": "^2.0.1",
     "jquery": "^2.1.3",
-    "underscore": "^1.7.0"
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "browserify": "^8.1.1",
-    "divshot-cli": "^1.6.0",
-    "express": "^4.11.1",
-    "jade": "^1.9.1",
+    "browserify": "^9.0.7",
+    "divshot-cli": "^1.10.4",
+    "express": "^4.12.3",
+    "jade": "^1.9.2",
     "less-import-inserter": "^1.0.1",
-    "lessitizer": "^1.2.0",
-    "moonboots-express": "^2.0.0",
-    "moonboots-static": "^1.2.0",
-    "phantomjs": "^1.9.13",
-    "precommit-hook": "^1.0.7",
-    "tap-spec": "^2.2.0",
-    "tape": "^3.4.0",
-    "tape-run": "^0.3.0",
-    "templatizer": "^1.1.1"
+    "lessitizer": "^2.0.0",
+    "moonboots-express": "^3.0.0",
+    "moonboots-static": "^2.0.0",
+    "phantomjs": "^1.9.16",
+    "precommit-hook": "^2.0.1",
+    "tap-spec": "^3.0.0",
+    "tape": "^4.0.0",
+    "tape-run": "^1.0.0",
+    "templatizer": "^1.3.0"
   },
   "engines": {
     "node": "^0.10.35"
@@ -44,6 +44,10 @@
   "homepage": "https://github.com/lukekarrys/gifchess.club",
   "license": "MIT",
   "main": "server.js",
+  "pre-commit": [
+    "lint",
+    "test"
+  ],
   "private": true,
   "repository": {
     "type": "git",
