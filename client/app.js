@@ -37,7 +37,7 @@ var App = State.extend({
         firebaseUrl: {
             deps: ['firebaseId'],
             fn: function () {
-                return 'https://' + this.firebaseId + '.firebaseio.com/';
+                return '//' + this.firebaseId + '.firebaseio.com/';
             }
         },
         firebase: {
