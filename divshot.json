@@ -1,5 +1,5 @@
 {
-  "name": "ss15-luke-js",
+  "name": "gifchess",
   "root": "./build",
   "clean_urls": true,
   "cache_control": {
