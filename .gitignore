@@ -31,4 +31,3 @@ node_modules
 build
 client/templates.js
 styles/app.css
-.divshot-cache

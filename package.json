@@ -24,7 +24,6 @@
   },
   "devDependencies": {
     "browserify": "^9.0.7",
-    "divshot-cli": "^1.10.4",
     "express": "^4.12.3",
     "jade": "^1.9.2",
     "less-import-inserter": "^1.0.1",
@@ -33,6 +32,7 @@
     "moonboots-static": "^2.0.0",
     "phantomjs": "^1.9.16",
     "precommit-hook": "^2.0.1",
+    "surge": "^0.15.0",
     "tap-spec": "^3.0.0",
     "tape": "^4.0.0",
     "tape-run": "^1.0.0",
@@ -55,10 +55,9 @@
   },
   "scripts": {
     "build": "node server --build --minify",
-    "codeship-deploy": "divshot push production",
+    "codeship-deploy": "surge --project build/ gifchess.club",
     "codeship-setup": "npm install -g npm@latest && npm install && npm run build",
     "codeship-test": "npm test && npm run lint",
-    "divshot": "divshot",
     "lint": "jshint .",
     "start": "node server",
     "test": "browserify test/*.js | tape-run | tap-spec",
