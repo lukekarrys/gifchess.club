@@ -39,7 +39,7 @@
     "templatizer": "^1.3.0"
   },
   "engines": {
-    "node": "^0.10.35"
+    "node": "^4.0.0"
   },
   "homepage": "https://github.com/lukekarrys/gifchess.club",
   "license": "MIT",
