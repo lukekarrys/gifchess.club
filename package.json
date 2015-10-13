@@ -55,7 +55,7 @@
   },
   "scripts": {
     "build": "node server --build --minify",
-    "codeship-deploy": "surge --project build/ gifchess.club",
+    "codeship-deploy": "surge --project build/ --domain gifchess.club",
     "codeship-setup": "npm install -g npm@latest && npm install && npm run build",
     "codeship-test": "npm test && npm run lint",
     "lint": "jshint .",
