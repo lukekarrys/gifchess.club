@@ -41,7 +41,7 @@
   "engines": {
     "node": "^4.0.0"
   },
-  "homepage": "https://github.com/lukekarrys/gifchess.club",
+  "homepage": "https://gifchessclub.surge.sh",
   "license": "MIT",
   "main": "server.js",
   "pre-commit": [
@@ -55,7 +55,7 @@
   },
   "scripts": {
     "build": "node server --build --minify",
-    "codeship-deploy": "surge --project build/ --domain gifchess.club",
+    "codeship-deploy": "surge --project build/ --domain https://gifchessclub.surge.sh",
     "codeship-setup": "npm install -g npm@latest && npm install && npm run build",
     "codeship-test": "npm test && npm run lint",
     "lint": "jshint .",
