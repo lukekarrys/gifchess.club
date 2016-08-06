@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var Chessboard = require('chessboardjs');
 var BaseView = require('./base');
 var templates = require('../templates');
 var Board = require('../views/board');
@@ -131,7 +132,7 @@ module.exports = BaseView.extend({
         this.boardView = this.renderSubview(new Board({
             chess: this.model.chess,
             role: this.model.role,
-            Chessboard: window.ChessBoard,
+            Chessboard: Chessboard,
             boardConfig: {
                 pieceTheme: '/img/{piece}.png',
                 showNotation: false

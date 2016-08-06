@@ -1,5 +1,5 @@
 var BaseView = require('./base');
-var Gifshot = require('../libraries/gifshot');
+var Gifshot = require('gifshot');
 var attachMediaStream = require('attachmediastream');
 
 

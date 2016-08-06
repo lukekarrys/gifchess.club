@@ -1,8 +1,9 @@
-/* globals jQuery, Firebase */
+/* globals jQuery */
 
 var getUserMedia = require('getusermedia');
 var attachFastClick = require('fastclick');
 var State = require('ampersand-state');
+var Firebase = require('firebase');
 var log = require('./helpers/log');
 
 var MainView = require('./views/main');
