@@ -18,7 +18,7 @@
     "bootstrap": "^3.3.7",
     "chessboardjs": "0.0.1",
     "fastclick": "^1.0.6",
-    "firebase": "^2.4.2",
+    "firebase": "^3.4.1",
     "getusermedia": "^2.0.0",
     "gifshot": "^0.3.2",
     "inherits": "^2.0.1",
