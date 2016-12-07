@@ -71,7 +71,7 @@ module.exports = MainView.extend({
         this.pageTitle = this.currentPage.pageTitle;
         this.collapseNav();
         if (!app.isLocal) {
-            track.pageview(window.location.pathname);
+            track.pageview(window.location);
         }
     },
 

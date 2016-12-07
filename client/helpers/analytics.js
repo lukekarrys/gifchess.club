@@ -1,6 +1,7 @@
-// Placeholder
+/* globals ga */
+
 module.exports = {
-    pageview: function () {
-        
+    pageview: function (l) {
+        ga('send', 'pageview', l.pathname + l.search);
     }
 };
