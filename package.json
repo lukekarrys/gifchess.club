@@ -39,8 +39,7 @@
     "templatizer": "^2.0.3"
   },
   "engines": {
-    "node": "^5.0.0",
-    "npm": "^3.0.0"
+    "node": "^6.0.0"
   },
   "greenkeeper": {
     "ignore": [
@@ -62,7 +61,7 @@
   "scripts": {
     "build": "node server --build --minify",
     "codeship-deploy": "surge --project build/ --domain https://gifchessclub.surge.sh",
-    "codeship-setup": "npm install -g npm@latest && npm install && npm run build",
+    "codeship-setup": "npm install && npm run build",
     "codeship-test": "npm run lint",
     "lint": "jshint .",
     "validate": "npm ls"
