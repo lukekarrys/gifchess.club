@@ -1,8 +1,7 @@
-var BaseView = require('../views/base');
-
+var BaseView = require('../views/base')
 
 module.exports = BaseView.extend({
-    props: {
-        pageTitle: 'string'
-    }
-});
+  props: {
+    pageTitle: 'string'
+  }
+})

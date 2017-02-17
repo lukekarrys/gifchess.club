@@ -1,7 +1,6 @@
-var BaseView = require('../views/base');
-var templates = require('../templates');
-
+var BaseView = require('../views/base')
+var templates = require('../templates')
 
 module.exports = BaseView.extend({
-    template: templates.pages._404
-});
+  template: templates.pages._404
+})

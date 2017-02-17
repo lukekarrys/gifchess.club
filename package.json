@@ -29,12 +29,13 @@
     "@lukekarrys/jade-runtime": "^1.11.1",
     "browserify": "^13.1.0",
     "express": "^4.14.0",
+    "git-validate": "^2.2.2",
     "jade": "^1.11.0",
     "less-import-inserter": "^1.0.1",
     "lessitizer": "^2.1.0",
     "moonboots-express": "^3.0.0",
     "moonboots-static": "^2.0.1",
-    "precommit-hook": "^3.0.0",
+    "standard": "^8.6.0",
     "surge": "^0.18.0",
     "templatizer": "^2.0.3"
   },
@@ -63,7 +64,16 @@
     "codeship-deploy": "surge --project build/ --domain https://gifchessclub.surge.sh",
     "codeship-setup": "npm install && npm run build",
     "codeship-test": "npm run lint",
-    "lint": "jshint .",
+    "lint": "standard",
     "validate": "npm ls"
+  },
+  "standard": {
+    "ignore": [
+      "build",
+      "client/templates.js"
+    ],
+    "globals": [
+      "app"
+    ]
   }
 }
