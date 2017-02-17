@@ -30,7 +30,7 @@
     "browserify": "^14.0.0",
     "express": "^4.14.0",
     "jade": "^1.11.0",
-    "less-import-inserter": "^1.0.1",
+    "less-import-inserter": "^2.0.0",
     "lessitizer": "^2.1.0",
     "moonboots-express": "^3.0.0",
     "moonboots-static": "^2.0.1",
