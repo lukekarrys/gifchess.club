@@ -35,7 +35,7 @@
     "lessitizer": "^3.0.0",
     "moonboots-express": "^3.0.0",
     "moonboots-static": "^2.0.1",
-    "standard": "^8.6.0",
+    "standard": "^9.0.0",
     "surge": "^0.18.0",
     "templatizer": "^2.0.3"
   },
