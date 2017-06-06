@@ -14,7 +14,7 @@
     "ampersand-router": "^5.0.0",
     "ampersand-state": "^5.0.2",
     "ampersand-view": "^10.0.1",
-    "attachmediastream": "^1.4.1",
+    "attachmediastream": "^2.0.0",
     "bootstrap": "^3.3.7",
     "chessboardjs": "0.0.1",
     "fastclick": "^1.0.6",
