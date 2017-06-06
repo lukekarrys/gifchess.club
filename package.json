@@ -62,7 +62,7 @@
   "scripts": {
     "build": "node server --build --minify",
     "codeship-deploy": "surge --project build/ --domain https://gifchessclub.surge.sh",
-    "codeship-setup": "npm install && npm run build",
+    "codeship-setup": "npm install && npm run validate && npm run build",
     "codeship-test": "npm run lint",
     "lint": "standard",
     "validate": "npm ls"
