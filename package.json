@@ -23,7 +23,8 @@
     "gifshot": "^0.3.2",
     "inherits": "^2.0.1",
     "jquery": "^3.1.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "webrtc-adapter": "^4.0.0"
   },
   "devDependencies": {
     "@lukekarrys/jade-runtime": "^1.11.1",
