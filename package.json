@@ -14,7 +14,7 @@
     "ampersand-router": "^5.0.0",
     "ampersand-state": "^5.0.2",
     "ampersand-view": "^10.0.1",
-    "attachmediastream": "^1.4.1",
+    "attachmediastream": "^2.0.0",
     "bootstrap": "^3.3.7",
     "chessboardjs": "0.0.1",
     "fastclick": "^1.0.6",
@@ -23,7 +23,8 @@
     "gifshot": "^0.3.2",
     "inherits": "^2.0.1",
     "jquery": "^3.1.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "webrtc-adapter": "^4.0.0"
   },
   "devDependencies": {
     "@lukekarrys/jade-runtime": "^1.11.1",
@@ -62,7 +63,7 @@
   "scripts": {
     "build": "node server --build --minify",
     "codeship-deploy": "surge --project build/ --domain https://gifchessclub.surge.sh",
-    "codeship-setup": "npm install && npm run build",
+    "codeship-setup": "npm install && npm run validate && npm run build",
     "codeship-test": "npm run lint",
     "lint": "standard",
     "validate": "npm ls"
