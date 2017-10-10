@@ -45,7 +45,8 @@
   },
   "greenkeeper": {
     "ignore": [
-      "firebase"
+      "firebase",
+      "webrtc-adapter"
     ]
   },
   "homepage": "https://gifchessclub.surge.sh",
