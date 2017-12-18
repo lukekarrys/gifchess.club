@@ -20,7 +20,7 @@
     "fastclick": "^1.0.6",
     "firebase": "^2.4.2",
     "getusermedia": "^2.0.1",
-    "gifshot": "^0.3.2",
+    "gifshot": "^0.4.5",
     "inherits": "^2.0.3",
     "jquery": "^3.2.1",
     "underscore": "^1.8.3",
