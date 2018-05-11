@@ -3,7 +3,6 @@
 var _ = require('underscore')
 var MainView = require('ampersand-main-view')
 var templates = require('../templates')
-var track = require('../helpers/analytics')
 var router = require('../router')
 
 module.exports = MainView.extend({
@@ -69,9 +68,6 @@ module.exports = MainView.extend({
     })
     this.pageTitle = this.currentPage.pageTitle
     this.collapseNav()
-    if (!app.isLocal) {
-      track.pageview(window.location)
-    }
   },
 
   collapseNav: function () {
