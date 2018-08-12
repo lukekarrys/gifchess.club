@@ -71,10 +71,6 @@ if (options.build) {
     directory: fixPath('build'),
     htmlSource: renderIndex,
     cb: function (err) {
-      fs.writeFileSync(
-        fixPath('build/200.html'),
-        fs.readFileSync(fixPath('build/index.html'))
-      )
       process.exit(err ? 1 : 0)
     }
   })
