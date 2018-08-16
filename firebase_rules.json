@@ -1,7 +1,7 @@
 {
     "rules": {
       "games": {
-        "$game": { 
+        "$game": {
           ".write": "auth != null && ((data.child('players/white/uid').val() == auth.uid || data.child('players/white/uid').val() == null) || (data.child('players/black/uid').val() == auth.uid || data.child('players/black/uid').val() == null))",
           "moves": {
             "$move": {
@@ -19,6 +19,6 @@
           ".write": "$user_id === auth.uid"
         }
       },
-      ".read": true
+      ".read": "auth != null"
     }
 }
